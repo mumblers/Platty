@@ -80,8 +80,10 @@ public class PlayerSprite extends Sprite {
                 return 4;
             case JUMPING:
                 return 5;
-            case WALKING:
-                return walking2 ? 1 : 2;
+            case WALKING1:
+                return 1;
+            case WALKING2:
+                return 2;
         }
         return -1;
     }
