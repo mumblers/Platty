@@ -20,28 +20,25 @@ public class PressurePlate extends GameObject implements Tickable, Drawable, Hit
 
     private static BufferedImage up, down;
 
+    static {
+        try {
+            BufferedImage sheet = ImageIO.read(Platty.class.getResourceAsStream("launcher.png"));
+            down = sheet.getSubimage(0, 0, 130, 70);
+            up = sheet.getSubimage(0, 70, 130, 70);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private Rectangle hitbox;
 
     private Player thePlayer;
 
     private boolean pressed = false;
 
-    //plate = new PressurePlate(new Rectangle(new Point(getBlockWidth() * WorldSprite.SPRITE_SIZE - 300, (getBlockHeight() - 2) * WorldSprite.SPRITE_SIZE), new Dimension(130, 70)), player);
     public PressurePlate(Point point, Player thePlayer) {
-        super();
-
         this.hitbox = new Rectangle(point, new Dimension(130, 70));
         this.thePlayer = thePlayer;
-
-        if (up == null) {
-            try {
-                BufferedImage sheet = ImageIO.read(Platty.class.getResourceAsStream("launcher.png"));
-                down = sheet.getSubimage(0, 0, 130, 70);
-                up = sheet.getSubimage(0, 70, 130, 70);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
@@ -60,8 +57,7 @@ public class PressurePlate extends GameObject implements Tickable, Drawable, Hit
 
     @Override
     public void draw(Graphics2D g, int xScroll) {
-        g.drawImage(isPressed() ? down : up, getHitbox().x, getHitbox().y, getHitbox().width, getHitbox().height, null);
+        g.drawImage(isPressed() ? down : up, getHitbox().x - xScroll, getHitbox().y, getHitbox().width, getHitbox().height, null);
     }
-
 
 }

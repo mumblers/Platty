@@ -20,6 +20,9 @@ public class Bomb extends GameObject implements Drawable, Tickable, Hitboxable {
     private static BufferedImage img;
     private static BufferedImage img2;
 
+    private long ticks = 0;
+    private long start = System.currentTimeMillis();
+
     static {
         try {
             img = ImageIO.read(Platty.class.getResourceAsStream("bat/bomb.png"));

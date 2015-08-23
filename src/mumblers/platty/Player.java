@@ -19,7 +19,7 @@ public class Player extends GameObject implements Tickable, Hitboxable, Drawable
     private MovementStatus movement = MovementStatus.STANDING;
 
     //the hitbox where the corner is left bottom!
-    private Rectangle box = new Rectangle(new Point(100, 100), SIZE);
+    private Rectangle box = new Rectangle(new Point(6000, 100), SIZE);
 
     private Input input;
     private World world;
@@ -176,5 +176,9 @@ public class Player extends GameObject implements Tickable, Hitboxable, Drawable
 
     private static BufferedImage getPlayerImage(MovementStatus movement, Direction direction) {
         return images[movement.ordinal() * 2 + (direction == Direction.LEFT ? 1 : 0)];
+    }
+
+    public int getPriority() {
+        return 2;
     }
 }

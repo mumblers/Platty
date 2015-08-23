@@ -4,6 +4,7 @@ import mumblers.platty.engine.Display;
 import mumblers.platty.engine.DisplayImplementor;
 import mumblers.platty.engine.GameObject;
 import mumblers.platty.engine.Input;
+import mumblers.platty.entity.PressurePlate;
 import mumblers.platty.world.World;
 
 import java.awt.*;
@@ -40,6 +41,10 @@ public class Platty implements DisplayImplementor {
         worldSprite = new WorldSprite(world, player);
 
         player = new Player(display.getInput(), world);
+
+        new Boss(new Point(world.getBlockWidth() * WorldSprite.SPRITE_SIZE - 300, 70), world, player);
+        new PressurePlate(new Point(world.getBlockWidth() * WorldSprite.SPRITE_SIZE - 300, (world.getBlockHeight() - 2) * WorldSprite.SPRITE_SIZE), player);
+
     }
 
     @Override
@@ -55,6 +60,7 @@ public class Platty implements DisplayImplementor {
 
 
     public void resetGame() {
+        System.exit(10);
         //todo: reset!
     }
 

@@ -131,4 +131,8 @@ public class WorldSprite extends GameObject implements Tickable, WorldListener, 
             }
         }
     }
+
+    public int getPriority() {
+        return 0;
+    }
 }

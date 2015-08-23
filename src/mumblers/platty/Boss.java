@@ -32,7 +32,7 @@ public class Boss extends GameObject implements Tickable, Drawable, Hitboxable {
         return ImageIO.read(Platty.class.getResourceAsStream("bat/" + name + ".png"));
     }
 
-    //new Point(world.getBlockWidth() * WorldSprite.SPRITE_SIZE - 300, 70)
+    //
     public Boss(Point location, World world, Player player) {
         super();
         this.world = world;
