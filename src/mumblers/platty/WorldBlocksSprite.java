@@ -45,6 +45,9 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
      */
     private boolean shouldDoTick = true;
 
+    private int cameraX = 0;
+    private int cameraY = 0;
+
     public static final int SPRITE_SIZE = 70;
 
     static {
@@ -78,16 +81,22 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
     public void render(Graphics2D g, int x, int y, int width, int height) {
         g.setColor(BACKGROUND);
         g.fillRect(x, y, width, height);
-        for (int row = 0; row < world.getBlockHeight(); row++) {
-            for (int col = 0; col < world.getBlockWidth(); col++) {
+        updateScroll(width, height);
+        for (int row = 0; row < blockImages.length; row++) {
+            for (int col = 0; col < blockImages[0].length; col++) {
                 int imgId = blockImages[row][col];
-                int xx = col * SPRITE_SIZE;
-                int yy = row * SPRITE_SIZE;
+                int xx = col * SPRITE_SIZE - cameraX;
+                int yy = row * SPRITE_SIZE - cameraY;
                 if (imgId != EMPTY_IMAGE_ID) {
                     g.drawImage(images[imgId], xx, yy, null);
                 }
             }
         }
+    }
+
+    private void updateScroll(int width, int height) {
+        cameraX = width / 2;
+        cameraX = Math.max(width / 2, cameraX);
     }
 
     @Override
@@ -100,7 +109,7 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
         if (!shouldDoTick)
             return;
         for (int row = 0; row < world.getBlockHeight(); row++) {
-            for (int col = 0; col < world.getBlockHeight(); col++) {
+            for (int col = 0; col < world.getBlockWidth(); col++) {
                 if (!world.blockAt(row, col)) {
                     blockImages[row][col] = EMPTY_IMAGE_ID;
                 } else {
@@ -124,7 +133,7 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
 
     @Override
     public void worldSizeUpdated() {
-        blockImages = new int[world.getBlockWidth()][world.getBlockHeight()];
+        blockImages = new int[world.getBlockHeight()][world.getBlockWidth()];
 
         for (int row = 0; row < world.getBlockHeight(); row++) {
             for (int col = 0; col < world.getBlockWidth(); col++) {

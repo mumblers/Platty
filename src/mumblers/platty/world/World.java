@@ -11,14 +11,13 @@ public class World {
     private List<WorldListener> listeners = new ArrayList<>();
 
     private static String[] defaultWorld = {
-            "00000000",
-            "01110100",
-            "01110000",
-            "01010010",
-            "00000010",
-            "00100010",
-            "01110000",
-            "00100111",
+            "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "11111111000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "00000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000",
+            "00000000000000000000000000000000000000000000000000011000000000000000000000000000000000000000000000000000000",
+            "11111111111111111111111111111111111111111111111111111000000111111111111111111111111111111111111111111111111",
     };
 
     private boolean[][] blocks;/* = new boolean[][]{
@@ -40,14 +39,14 @@ public class World {
     public World() {
         blockWidth = defaultWorld[0].length();
         blockHeight = defaultWorld.length;
-        blocks = new boolean[blockWidth][blockHeight];
+        blocks = new boolean[blockHeight][blockWidth];
         makeBlocksFromString(defaultWorld);
     }
 
     private void makeBlocksFromString(String[] world) {
         for (int y = 0; y < blockHeight; y++) {
             for (int x = 0; x < blockWidth; x++) {
-                blocks[y][x] = defaultWorld[y].charAt(x) == WALL_TILE;
+                blocks[y][x] = world[y].charAt(x) == WALL_TILE;
             }
         }
     }
