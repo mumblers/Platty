@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * Created by Sinius on 19-8-2015.
@@ -54,6 +55,7 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
     private int cameraX = 0;
     private int currentCameraX = 0;
     private final int movementspeed = 12;
+    private Random rand;
 
     private boolean headingRight = true;
     private int pX = 0;
@@ -61,12 +63,15 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
 
     public static final int SPRITE_SIZE = 70;
 
+    private static BufferedImage background;
+
     static {
         try {
             BufferedImage sheet = ImageIO.read(Platty.class.getResourceAsStream("wall.png"));
             for (int i = 0; i < images.length; i++) {
                 images[i] = sheet.getSubimage((i % 2) * SPRITE_SIZE, (i / 2) * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
             }
+            background = ImageIO.read(Platty.class.getResourceAsStream("background.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -77,6 +82,7 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
         player = world.getPlayer();
         playerSprite = new PlayerSprite(world.getPlayer());
         this.world.addListener(this);
+        rand = new Random();
         worldSizeUpdated();
     }
 
@@ -93,23 +99,25 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
     @Override
     public void render(Graphics2D g, int x, int y, int width, int height) {
         g.setColor(BACKGROUND);
-        g.fillRect(x, y, width, height);
+//        g.fillRect(x, y, width, height);
+        g.drawImage(background, x, y, width / 2, height, null);
+        g.drawImage(background, x + width / 2, y, width / 2, height, null);
         updateScroll(width);
         for (int row = 0; row < blockImages.length; row++) {
             for (int col = 0; col < blockImages[0].length; col++) {
                 int imgId = blockImages[row][col];
-                int xx = col * SPRITE_SIZE - currentCameraX;
-                int yy = row * SPRITE_SIZE;
+                int xx = x + col * SPRITE_SIZE - currentCameraX;
+                int yy = y + row * SPRITE_SIZE;
                 if (imgId != EMPTY_IMAGE_ID) {
                     g.drawImage(images[imgId], xx, yy, null);
                 }
             }
         }
-        playerSprite.render(g, player.getLocation().x - currentCameraX, player.getLocation().y);
+        playerSprite.render(g, x + player.getLocation().x - currentCameraX, y + player.getLocation().y);
     }
 
     private void updateScroll(int width) {
-        if (headingRight) {
+        if (player.getDirection() == Direction.LEFT) {
             cameraX = player.getLocation().x - (width * 3) / 4;
         } else {
             cameraX = player.getLocation().x - width / 4;
