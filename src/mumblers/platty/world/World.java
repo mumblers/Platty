@@ -1,6 +1,7 @@
 package mumblers.platty.world;
 
 import mumblers.platty.Player;
+import mumblers.platty.WorldSprite;
 import mumblers.platty.graphics.Input;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class World {
         blockHeight = defaultWorld.length;
         blocks = new boolean[blockHeight][blockWidth];
         makeBlocksFromString(defaultWorld);
-        player = new Player(input);
+        player = new Player(input, this);
     }
 
     private void makeBlocksFromString(String[] world) {
@@ -60,6 +61,12 @@ public class World {
         if (row < 0 || col < 0 || row >= blockHeight || col >= blockWidth)
             return false;
         return blocks[row][col];
+    }
+
+    public boolean blockAtPixel(int x, int y) {
+        int row = y / WorldSprite.SPRITE_SIZE;
+        int col = x / WorldSprite.SPRITE_SIZE;
+        return blockAt(row, col);
     }
 
     public void setBlockAt(int row, int col, boolean hasBlock) {

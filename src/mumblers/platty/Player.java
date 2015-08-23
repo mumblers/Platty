@@ -2,6 +2,7 @@ package mumblers.platty;
 
 import mumblers.platty.graphics.Input;
 import mumblers.platty.graphics.Tickable;
+import mumblers.platty.world.World;
 
 import java.awt.*;
 
@@ -24,11 +25,72 @@ public class Player implements Tickable {
 
     private Input input;
 
-    private int walkCounter = 0;
+    private World world;
 
-    public Player(Input input) {
+    private int walkCounter = 0;
+    private int jumpCounter = 0;
+    private boolean jumpLocked = false;
+
+    public Player(Input input, World world) {
         this.input = input;
+        this.world = world;
     }
+
+    @Override
+    public void tick() {
+        if (input.left.isClicked())
+            direction = Direction.LEFT;
+        if (input.right.isClicked())
+            direction = Direction.RIGHT;
+
+        if (input.down.isPressed())
+            movement = MovementStatus.DUCKING;
+        else if (input.up.isPressed()) {
+            movement = MovementStatus.JUMPING;
+
+            if (jumpCounter < 100 && !jumpLocked)
+                location.y -= 10;
+            jumpCounter++;
+
+        } else
+            movement = MovementStatus.STANDING;
+
+
+        if (input.right.isPressed() || input.left.isPressed()) {
+            walkCounter++;
+            if (walkCounter >= 5)
+                movement = MovementStatus.WALKING1;
+            else
+                movement = MovementStatus.WALKING2;
+            if (walkCounter >= 10)
+                walkCounter = 0;
+
+            if (input.right.isPressed()) {
+                location.x += 7;
+            } else {
+                location.x -= 7;
+            }
+        }
+
+        if (hasBlockBeneith()) {
+            jumpCounter = 0;
+            jumpLocked = false;
+        } else {
+            location.y += 5;
+        }
+
+        if (!input.up.isPressed() && jumpCounter > 0)
+            jumpLocked = true;
+    }
+
+    private void updateLocation() {
+
+    }
+
+    public boolean hasBlockBeneith() {
+        return world.blockAtPixel(location.x, location.y - 1) || world.blockAtPixel(location.x + 66, location.y - 1);
+    }
+
 
     public Direction getDirection() {
         return direction;
@@ -48,40 +110,5 @@ public class Player implements Tickable {
 
     public Point getLocation() {
         return location;
-    }
-
-    @Override
-    public void tick() {
-        if (input.left.isClicked())
-            direction = Direction.LEFT;
-        if (input.right.isClicked())
-            direction = Direction.RIGHT;
-
-        if (input.down.isPressed())
-            movement = MovementStatus.DUCKING;
-        else if (input.up.isPressed())
-            movement = MovementStatus.JUMPING;
-        else if (input.right.isPressed() || input.left.isPressed()) {
-            walkCounter++;
-            if (walkCounter >= 5)
-                movement = MovementStatus.WALKING1;
-            else
-                movement = MovementStatus.WALKING2;
-            if (walkCounter >= 10)
-                walkCounter = 0;
-        } else
-            movement = MovementStatus.STANDING;
-
-        updateLocation();
-    }
-
-    private void updateLocation() {
-        if (movement == MovementStatus.WALKING1 || movement == MovementStatus.WALKING2) {
-            if (direction == Direction.RIGHT) {
-                location.x += 7;
-            } else {
-                location.x -= 7;
-            }
-        }
     }
 }
