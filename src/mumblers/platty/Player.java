@@ -20,9 +20,11 @@ public class Player implements Tickable {
      */
     private MovementStatus movement = MovementStatus.STANDING;
 
-    private Point location = new Point(0, 0);
+    private Point location = new Point(0, 100);
 
     private Input input;
+
+    private int walkCounter = 0;
 
     public Player(Input input) {
         this.input = input;
@@ -54,11 +56,21 @@ public class Player implements Tickable {
             direction = Direction.LEFT;
         if (input.right.isClicked())
             direction = Direction.RIGHT;
+
         if (input.down.isPressed())
             movement = MovementStatus.DUCKING;
         else if (input.up.isPressed())
             movement = MovementStatus.JUMPING;
-        else
+        else if (input.right.isPressed() || input.left.isPressed()) {
+            walkCounter++;
+            if (walkCounter >= 5)
+                movement = MovementStatus.WALKING1;
+            else
+                movement = MovementStatus.WALKING2;
+            if (walkCounter >= 10)
+                walkCounter = 0;
+        } else
             movement = MovementStatus.STANDING;
+
     }
 }

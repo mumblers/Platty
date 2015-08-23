@@ -61,7 +61,7 @@ public class PlayerSprite extends Sprite {
 
     @Override
     public void render(Graphics2D g, int x, int y, int width, int height) {
-        g.drawImage(getPlayerImage(thePlayer.getMovement(), thePlayer.getDirection()), x, y, null);
+        g.drawImage(getPlayerImage(thePlayer.getMovement(), thePlayer.getDirection()), x, y - height, null);
     }
 
     @Override
