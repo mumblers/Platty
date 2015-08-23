@@ -5,8 +5,7 @@ import mumblers.platty.graphics.DisplayRenderer;
 import mumblers.platty.graphics.Tickable;
 import mumblers.platty.world.World;
 
-import java.awt.Dimension;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -20,6 +19,9 @@ public class Platty implements DisplayRenderer {
     WorldBlocksSprite worldSprite;
     World world;
 
+    Player player;
+    PlayerSprite playerSprite;
+
     public Platty() {
         this.display = new Display("Platty");
 
@@ -32,6 +34,9 @@ public class Platty implements DisplayRenderer {
         tickers.add(display.getInput());
 
         display.start();
+
+        player = new Player();
+        playerSprite = new PlayerSprite(player);
     }
 
     public static void main(String[] args) {
@@ -41,6 +46,7 @@ public class Platty implements DisplayRenderer {
     @Override
     public void render(Graphics2D g, Dimension size) {
         worldSprite.render(g, 0, 0, display.getWidth(), display.getHeight());
+        playerSprite.render(g, 0, 0, display.getWidth(), display.getHeight());
     }
 
     @Override

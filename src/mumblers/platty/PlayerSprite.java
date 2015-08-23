@@ -39,7 +39,7 @@ public class PlayerSprite extends Sprite {
             images = new BufferedImage[12];
             for (int i = 0; i < 12; i += 2) {
                 try {
-                    images[i] = ImageIO.read(Platty.class.getResourceAsStream("player/alienBlue_" + i));
+                    images[i] = ImageIO.read(Platty.class.getResourceAsStream("player/alienBlue_" + (i / 2) + ".png"));
                     BufferedImage rotated = new BufferedImage(images[i].getWidth(), images[i].getHeight(), BufferedImage.TYPE_INT_ARGB);
                     rotated.createGraphics().drawImage(images[i], rotated.getWidth(), rotated.getHeight(), 0, 0, null);
                     images[i + 1] = rotated;
@@ -83,5 +83,6 @@ public class PlayerSprite extends Sprite {
             case WALKING:
                 return walking2 ? 1 : 2;
         }
+        return -1;
     }
 }
