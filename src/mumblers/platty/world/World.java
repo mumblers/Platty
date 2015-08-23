@@ -1,5 +1,6 @@
 package mumblers.platty.world;
 
+import mumblers.platty.Boss;
 import mumblers.platty.Player;
 import mumblers.platty.WorldSprite;
 import mumblers.platty.graphics.Input;
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public class World {
 
+    private Boss boss;
     private Player player;
     private List<WorldListener> listeners = new ArrayList<>();
 
@@ -41,6 +43,7 @@ public class World {
         blocks = new boolean[blockHeight][blockWidth];
         makeBlocksFromString(defaultWorld);
         player = new Player(input, this);
+        boss = new Boss(this);
     }
 
     private void makeBlocksFromString(String[] world) {
@@ -113,5 +116,13 @@ public class World {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public Boss getBoss() {
+        return boss;
+    }
+
+    public void addBomb(int x, int i) {
+        System.out.println("ADDING BOMB");
     }
 }

@@ -21,6 +21,7 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
     private static final int CAMERA_MOD = 4;
     private final Player player;
     private final PlayerSprite playerSprite;
+    private final Boss boss;
     /**
      * The world to draw
      */
@@ -70,6 +71,7 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
         this.world = world;
         player = world.getPlayer();
         playerSprite = new PlayerSprite(world.getPlayer());
+        boss = world.getBoss();
         this.world.addListener(this);
         worldSizeUpdated();
     }
@@ -102,6 +104,8 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
             }
         }
         playerSprite.render(g, x + player.getLocation().x - currentCameraX, y + player.getLocation().y);
+        g.drawString("x" + player.getLocation().x, 100, 100);
+        boss.render(g, cameraX);
     }
 
     private void updateScroll(int width) {

@@ -51,6 +51,7 @@ public class Platty implements DisplayRenderer {
 
             worldSprite = new WorldSprite(world);
             tickers.add(world.getPlayer());
+            tickers.add(world.getBoss());
             tickers.add(worldSprite);
             tickers.add(display.getInput());
             toReset = false;
