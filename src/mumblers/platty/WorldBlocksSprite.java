@@ -1,13 +1,15 @@
 package mumblers.platty;
 
 import mumblers.platty.graphics.Display;
+import mumblers.platty.graphics.Input;
 import mumblers.platty.graphics.Sprite;
 import mumblers.platty.graphics.Tickable;
 import mumblers.platty.world.World;
 import mumblers.platty.world.WorldListener;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -22,6 +24,7 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
      * The world to draw
      */
     private World world;
+    private Input input;
 
     /**
      * All possible block images.
@@ -46,7 +49,11 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
     private boolean shouldDoTick = true;
 
     private int cameraX = 0;
-    private int cameraY = 0;
+    private final int movementspeed = 12;
+
+    private boolean headingRight = true;
+    private int pX = 0;
+    private boolean moving;
 
     public static final int SPRITE_SIZE = 70;
 
@@ -61,8 +68,9 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
         }
     }
 
-    public WorldBlocksSprite(World world) {
+    public WorldBlocksSprite(World world, Input input) {
         this.world = world;
+        this.input = input;
         this.world.addListener(this);
         worldSizeUpdated();
     }
@@ -85,18 +93,24 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
         for (int row = 0; row < blockImages.length; row++) {
             for (int col = 0; col < blockImages[0].length; col++) {
                 int imgId = blockImages[row][col];
-                int xx = col * SPRITE_SIZE;
+                int xx = col * SPRITE_SIZE - cameraX;
                 int yy = row * SPRITE_SIZE;
                 if (imgId != EMPTY_IMAGE_ID) {
                     g.drawImage(images[imgId], xx, yy, null);
                 }
             }
         }
+        g.setColor(new Color(12, 145, 85));
+        g.fillRect(pX - cameraX, 10, 70, 100);
     }
 
     private void updateScroll(int width, int height) {
-        cameraX = width / 2;
-        cameraX = Math.max(width / 2, cameraX);
+        if (headingRight) {
+            cameraX = pX - (width * 3) / 4;
+        } else {
+            cameraX = pX - width / 4;
+        }
+        cameraX = Math.max(0, cameraX);
     }
 
     @Override
@@ -106,6 +120,19 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
 
     @Override
     public void tick() {
+        moving = false;
+        if (input.right.isPressed()) {
+            pX += movementspeed;
+            headingRight = false;
+            moving = true;
+        }
+        if (input.left.isPressed()) {
+            pX -= movementspeed;
+            headingRight = true;
+            if (moving) {
+                moving = false;
+            }
+        }
         if (!shouldDoTick)
             return;
         for (int row = 0; row < world.getBlockHeight(); row++) {

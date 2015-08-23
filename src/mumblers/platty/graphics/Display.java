@@ -188,7 +188,7 @@ public class Display extends Canvas implements Runnable {
         return renderer;
     }
 
-    public Tickable getInput() {
+    public Input getInput() {
         return input;
     }
 }

@@ -29,7 +29,7 @@ public class Platty implements DisplayRenderer {
         display.setRenderer(this);
         world = new World();
 
-        worldSprite = new WorldBlocksSprite(world);
+        worldSprite = new WorldBlocksSprite(world, display.getInput());
         tickers.add(worldSprite);
         tickers.add(display.getInput());
 
