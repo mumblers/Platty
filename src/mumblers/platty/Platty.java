@@ -18,6 +18,8 @@ public class Platty implements DisplayImplementor {
     World world;
     Input input;
 
+    public Dimension displaySize;
+
     public static Platty thiss;
 
     private Player player;
@@ -26,23 +28,23 @@ public class Platty implements DisplayImplementor {
         thiss = this;
         this.display = new Display("Platty");
 
+        input = display.getInput();
+        initGame();
+
         display.setRenderer(this);
         display.start();
-
-        input = display.getInput();
-
-        initGame();
     }
 
     private void initGame() {
         world = new World(display.getInput());
-        worldSprite = new WorldSprite(world);
+        worldSprite = new WorldSprite(world, player);
 
         player = new Player(display.getInput(), world);
     }
 
     @Override
     public void render(Graphics2D g, Dimension size) {
+        displaySize = size;
         GameObject.drawGameObjects(g, player.calculateXScroll(display.getWidth()));
     }
 

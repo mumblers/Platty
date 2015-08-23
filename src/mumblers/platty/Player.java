@@ -19,7 +19,7 @@ public class Player extends GameObject implements Tickable, Hitboxable, Drawable
     private MovementStatus movement = MovementStatus.STANDING;
 
     //the hitbox where the corner is left bottom!
-    private Rectangle box = new Rectangle(new Point(6000, 100), SIZE);
+    private Rectangle box = new Rectangle(new Point(100, 100), SIZE);
 
     private Input input;
     private World world;
@@ -171,7 +171,7 @@ public class Player extends GameObject implements Tickable, Hitboxable, Drawable
 
     @Override
     public void draw(Graphics2D g, int xScroll) {
-        g.drawImage(getPlayerImage(getMovement(), getDirection()), box.x, box.y - SIZE.height, null);
+        g.drawImage(getPlayerImage(getMovement(), getDirection()), box.x - xScroll, box.y - SIZE.height, null);
     }
 
     private static BufferedImage getPlayerImage(MovementStatus movement, Direction direction) {

@@ -10,7 +10,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Iterator;
 
 /**
  * Created by Sinius on 19-8-2015.
@@ -19,9 +18,8 @@ import java.util.Iterator;
 public class WorldSprite extends GameObject implements Tickable, WorldListener, Drawable {
 
     private static final Color BACKGROUND = new Color(100, 100, 255);
-    private static final int CAMERA_MOD = 4;
-    private final Player player;
-    private final Boss boss;
+
+    private Player player;
     /**
      * The world to draw
      */
@@ -49,8 +47,6 @@ public class WorldSprite extends GameObject implements Tickable, WorldListener, 
      */
     private boolean shouldDoTick = true;
 
-    private int currentCameraX = 0;
-
     public static final int SPRITE_SIZE = 70;
 
     private static BufferedImage background;
@@ -67,16 +63,12 @@ public class WorldSprite extends GameObject implements Tickable, WorldListener, 
         }
     }
 
-    public WorldSprite(World world) {
+    public WorldSprite(World world, Player player) {
         this.world = world;
-        player = world.getPlayer();
-        playerSprite = new PlayerSprite(world.getPlayer());
-        boss = world.getBoss();
+        this.player = player;
         this.world.addListener(this);
         worldSizeUpdated();
     }
-
-
 
     @Override
     public void tick() {
@@ -121,33 +113,22 @@ public class WorldSprite extends GameObject implements Tickable, WorldListener, 
     @Override
     public void draw(Graphics2D g, int xScroll) {
         g.setColor(BACKGROUND);
-        g.drawImage(background, x, y, width / 3, height, null);
-        g.drawImage(background, x + width / 3, y, width / 3, height, null);
-        g.drawImage(background, x + (width - width / 3), y, width / 3, height, null);
-        updateScroll(width);
+        int width = (int) Platty.thiss.displaySize.getWidth();
+        int height = (int) Platty.thiss.displaySize.getHeight();
+
+        g.drawImage(background, 0, 0, width / 3, height, null);
+        g.drawImage(background, width / 3, 0, width / 3, height, null);
+        g.drawImage(background, (width - width / 3), 0, width / 3, height, null);
+
         for (int row = 0; row < blockImages.length; row++) {
             for (int col = 0; col < blockImages[0].length; col++) {
                 int imgId = blockImages[row][col];
-                int xx = x + col * SPRITE_SIZE - currentCameraX;
-                int yy = y + row * SPRITE_SIZE;
+                int xx = col * SPRITE_SIZE - xScroll;
+                int yy = row * SPRITE_SIZE;
                 if (imgId != EMPTY_IMAGE_ID) {
                     g.drawImage(images[imgId], xx, yy, null);
                 }
             }
-        }
-        world.getPlate().render(g, currentCameraX);
-        playerSprite.render(g, x + player.getLocation().x - currentCameraX, y + player.getLocation().y);
-        g.drawString("x" + player.getLocation().x, 100, 100);
-        boss.render(g, currentCameraX);
-
-        for (Iterator<Bomb> iterator = world.getBombs().iterator(); iterator.hasNext(); ) {
-            Bomb bomb = iterator.next();
-            if (bomb.removeMe) {
-                iterator.remove();
-                continue;
-            }
-            bomb.tick(world);
-            bomb.render(g, currentCameraX);
         }
     }
 }
