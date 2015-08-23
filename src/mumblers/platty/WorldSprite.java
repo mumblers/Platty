@@ -99,8 +99,9 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
     public void render(Graphics2D g, int x, int y, int width, int height) {
         g.setColor(BACKGROUND);
 //        g.fillRect(x, y, width, height);
-        g.drawImage(background, x, y, width / 2, height, null);
-        g.drawImage(background, x + width / 2, y, width / 2, height, null);
+        g.drawImage(background, x, y, width / 3, height, null);
+        g.drawImage(background, x + width / 3, y, width / 3, height, null);
+        g.drawImage(background, x + (width - width / 3), y, width / 3, height, null);
         updateScroll(width);
         for (int row = 0; row < blockImages.length; row++) {
             for (int col = 0; col < blockImages[0].length; col++) {
