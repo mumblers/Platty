@@ -7,11 +7,17 @@ import java.awt.*;
  */
 public class Player {
 
-    private Direction direction;
+    /**
+     * For the player only RIGHT and LEFT
+     */
+    private Direction direction = Direction.RIGHT;
 
-    private MovementStatus movement;
+    /**
+     * What movement is the player doing? This variable will give the answer
+     */
+    private MovementStatus movement = MovementStatus.STANDING;
 
-    private Point location = new Point(100, 100);
+    private Point location = new Point(0, 0);
 
     public Direction getDirection() {
         return direction;

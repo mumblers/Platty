@@ -33,10 +33,12 @@ public class Platty implements DisplayRenderer {
         tickers.add(worldSprite);
         tickers.add(display.getInput());
 
-        display.start();
-
         player = new Player();
         playerSprite = new PlayerSprite(player);
+
+        display.start();
+
+
     }
 
     public static void main(String[] args) {

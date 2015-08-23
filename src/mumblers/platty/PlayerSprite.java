@@ -30,18 +30,17 @@ public class PlayerSprite extends Sprite {
      */
     private static BufferedImage[] images = null;
 
-    private boolean walking2 = true;
-
     public PlayerSprite(Player thePlayer) {
         this.thePlayer = thePlayer;
 
         if (images == null) {
+            System.out.println("Loading player images");
             images = new BufferedImage[12];
             for (int i = 0; i < 12; i += 2) {
                 try {
                     images[i] = ImageIO.read(Platty.class.getResourceAsStream("player/alienBlue_" + (i / 2) + ".png"));
                     BufferedImage rotated = new BufferedImage(images[i].getWidth(), images[i].getHeight(), BufferedImage.TYPE_INT_ARGB);
-                    rotated.createGraphics().drawImage(images[i], rotated.getWidth(), rotated.getHeight(), 0, 0, null);
+                    rotated.createGraphics().drawImage(images[i], images[i].getWidth(), 0, -images[i].getWidth(), images[i].getHeight(), null);
                     images[i + 1] = rotated;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -52,17 +51,17 @@ public class PlayerSprite extends Sprite {
 
     @Override
     public int getWidth() {
-        return 76;
+        return getPlayerImage(thePlayer.getMovement(), thePlayer.getDirection()).getWidth();
     }
 
     @Override
     public int getHeight() {
-        return 96;
+        return getPlayerImage(thePlayer.getMovement(), thePlayer.getDirection()).getHeight();
     }
 
     @Override
     public void render(Graphics2D g, int x, int y, int width, int height) {
-
+        g.drawImage(getPlayerImage(thePlayer.getMovement(), thePlayer.getDirection()), x, y, null);
     }
 
     @Override
@@ -70,21 +69,7 @@ public class PlayerSprite extends Sprite {
         //
     }
 
-    private int getPlayerBaseImage(MovementStatus movement) {
-        switch (movement) {
-            case DUCKING:
-                return 3;
-            case STANDING:
-                return 0;
-            case HURTING:
-                return 4;
-            case JUMPING:
-                return 5;
-            case WALKING1:
-                return 1;
-            case WALKING2:
-                return 2;
-        }
-        return -1;
+    private static BufferedImage getPlayerImage(MovementStatus movement, Direction direction) {
+        return images[movement.ordinal() * 2 + (direction == Direction.RIGHT ? 1 : 0)];
     }
 }

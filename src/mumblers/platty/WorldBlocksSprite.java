@@ -85,8 +85,8 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
         for (int row = 0; row < blockImages.length; row++) {
             for (int col = 0; col < blockImages[0].length; col++) {
                 int imgId = blockImages[row][col];
-                int xx = col * SPRITE_SIZE - cameraX;
-                int yy = row * SPRITE_SIZE - cameraY;
+                int xx = col * SPRITE_SIZE;
+                int yy = row * SPRITE_SIZE;
                 if (imgId != EMPTY_IMAGE_ID) {
                     g.drawImage(images[imgId], xx, yy, null);
                 }
