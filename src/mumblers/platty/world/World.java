@@ -10,7 +10,17 @@ public class World {
 
     private List<WorldListener> listeners = new ArrayList<>();
 
-    private boolean[][] blocks = new boolean[][]{
+    private static String[] defaultWorld = {
+            "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "11111111000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "00000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000",
+            "00000000000000000000000000000000000000000000000000011000000000000000000000000000000000000000000000000000000",
+            "11111111111111111111111111111111111111111111111111111000000111111111111111111111111111111111111111111111111",
+    };
+
+    private boolean[][] blocks;/* = new boolean[][]{
             {false, false, false, false, false, false, false, false},
             {false, true, true, true, false, true, false, false},
             {false, true, true, true, false, false, false, false},
@@ -19,11 +29,27 @@ public class World {
             {false, false, true, false, false, false, true, false},
             {false, true, true, true, false, false, false, false},
             {false, false, true, false, false, true, true, true}
-    };
+    };*/
 
     //these vars can not changes because than the WorldBlockSprite should also update
-    private int blockWidth = blocks[0].length;
-    private int blockHeight = blocks.length;
+    private int blockWidth;// = blocks[0].length;
+    private int blockHeight;// = blocks.length;
+    private static final char WALL_TILE = '1';
+
+    public World() {
+        blockWidth = defaultWorld[0].length();
+        blockHeight = defaultWorld.length;
+        blocks = new boolean[blockHeight][blockWidth];
+        makeBlocksFromString(defaultWorld);
+    }
+
+    private void makeBlocksFromString(String[] world) {
+        for (int y = 0; y < blockHeight; y++) {
+            for (int x = 0; x < blockWidth; x++) {
+                blocks[y][x] = world[y].charAt(x) == WALL_TILE;
+            }
+        }
+    }
 
     public boolean blockAt(int row, int col) {
         if (row < 0 || col < 0 || row >= blockHeight || col >= blockWidth)

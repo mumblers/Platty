@@ -17,6 +17,7 @@ import java.io.IOException;
  */
 public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener {
 
+    private static final Color BACKGROUND = new Color(100, 100, 255);
     /**
      * The world to draw
      */
@@ -33,11 +34,6 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
     private static final int EMPTY_IMAGE_ID = -1;
 
     /**
-     * The width and height a image is drawn onto the screen
-     */
-    private static final int IMAGE_RESIZED_SIZE = 32;
-
-    /**
      * Here are all the blockImages saved. In the tick is calculated
      * what sprite is good for what block. this array saves those outcomes
      * for the renderer to render.
@@ -48,6 +44,9 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
      * Should do a tick to update the placements of the blocks
      */
     private boolean shouldDoTick = true;
+
+    private int cameraX = 0;
+    private int cameraY = 0;
 
     public static final int SPRITE_SIZE = 70;
 
@@ -80,19 +79,24 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
 
     @Override
     public void render(Graphics2D g, int x, int y, int width, int height) {
-        g.setColor(Color.black);
-        for (int row = 0; row < world.getBlockHeight(); row++) {
-            for (int col = 0; col < world.getBlockWidth(); col++) {
+        g.setColor(BACKGROUND);
+        g.fillRect(x, y, width, height);
+        updateScroll(width, height);
+        for (int row = 0; row < blockImages.length; row++) {
+            for (int col = 0; col < blockImages[0].length; col++) {
                 int imgId = blockImages[row][col];
-                int xx = col * SPRITE_SIZE;
-                int yy = row * SPRITE_SIZE;
-                if (imgId == EMPTY_IMAGE_ID) {
-                    g.fillRect(xx, yy, SPRITE_SIZE, SPRITE_SIZE);
-                } else {
-                    g.drawImage(images[imgId], xx, yy, Color.black, null);
+                int xx = col * SPRITE_SIZE - cameraX;
+                int yy = row * SPRITE_SIZE - cameraY;
+                if (imgId != EMPTY_IMAGE_ID) {
+                    g.drawImage(images[imgId], xx, yy, null);
                 }
             }
         }
+    }
+
+    private void updateScroll(int width, int height) {
+        cameraX = width / 2;
+        cameraX = Math.max(width / 2, cameraX);
     }
 
     @Override
@@ -105,7 +109,7 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
         if (!shouldDoTick)
             return;
         for (int row = 0; row < world.getBlockHeight(); row++) {
-            for (int col = 0; col < world.getBlockHeight(); col++) {
+            for (int col = 0; col < world.getBlockWidth(); col++) {
                 if (!world.blockAt(row, col)) {
                     blockImages[row][col] = EMPTY_IMAGE_ID;
                 } else {
@@ -129,7 +133,7 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
 
     @Override
     public void worldSizeUpdated() {
-        blockImages = new int[world.getBlockWidth()][world.getBlockHeight()];
+        blockImages = new int[world.getBlockHeight()][world.getBlockWidth()];
 
         for (int row = 0; row < world.getBlockHeight(); row++) {
             for (int col = 0; col < world.getBlockWidth(); col++) {

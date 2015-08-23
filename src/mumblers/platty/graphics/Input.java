@@ -2,32 +2,24 @@ package mumblers.platty.graphics;
 
 import java.awt.Component;
 import java.awt.Point;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * @author davidot
  */
-public class Input implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
+public class Input implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener, Tickable {
 
     /**
      * The key for down
      */
-    public final Key reverse;
+    public final Key down;
 
     /**
      * The key for up
      */
-    public final Key forward;
+    public final Key up;
 
     /**
      * The key for left
@@ -38,11 +30,6 @@ public class Input implements MouseListener, MouseMotionListener, MouseWheelList
      * The key for right
      */
     public final Key right;
-    //    public final Key numOne;
-//    public final Key numTwo;
-//    public final Key numThree;
-//    public final Key numFour;
-//    public final Key numFive;
     public final Key attack;
     public final Key pause;
     public final Key inventory;
@@ -51,7 +38,7 @@ public class Input implements MouseListener, MouseMotionListener, MouseWheelList
     public boolean rightDown = false;
     public boolean wheelDown = false;
 
-    private List<Key> keys = new ArrayList<Key>();
+    private List<Key> keys = new ArrayList<>();
 
     private boolean leftPressed = false;
     private boolean rightPressed = false;
@@ -60,11 +47,7 @@ public class Input implements MouseListener, MouseMotionListener, MouseWheelList
 
     private int y = 0;
 
-    boolean anykeyOn = false;
-    private AnyKey pressEvent;
-
-    private List<WheelListener> wheelListeners = new ArrayList<WheelListener>();
-    private List<KeyToggle> keyToggles = new ArrayList<KeyToggle>();
+    private List<WheelListener> wheelListeners = new ArrayList<>();
 
 
     public Input(Component comp) {
@@ -77,8 +60,8 @@ public class Input implements MouseListener, MouseMotionListener, MouseWheelList
             setPoint(comp.getMousePosition());
         }
 
-        reverse = getKey("Down", "downKey", new int[]{KeyEvent.VK_DOWN, KeyEvent.VK_S});
-        forward = getKey("Up", "upKey", new int[]{KeyEvent.VK_UP, KeyEvent.VK_W});
+        down = getKey("Down", "downKey", new int[]{KeyEvent.VK_DOWN, KeyEvent.VK_S});
+        up = getKey("Up", "upKey", new int[]{KeyEvent.VK_UP, KeyEvent.VK_W});
         left = getKey("Left", "leftKey", new int[]{KeyEvent.VK_LEFT, KeyEvent.VK_A});
         right = getKey("Right", "rightKey", new int[]{KeyEvent.VK_RIGHT, KeyEvent.VK_D});
         attack = getKey("Attack, Action", "enterKey",
@@ -110,15 +93,6 @@ public class Input implements MouseListener, MouseMotionListener, MouseWheelList
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (anykeyOn) {
-            if (pressEvent != null) {
-                if (pressEvent.onPress(e)) {
-                    anykeyOn = false;
-                    pressEvent = null;
-                }
-            }
-            return;
-        }
         call(e, true);
     }
 
@@ -128,23 +102,11 @@ public class Input implements MouseListener, MouseMotionListener, MouseWheelList
     }
 
     public void call(KeyEvent e, boolean pressed) {
-        boolean consumed = false;
         int keyNum = e.getKeyCode();
         for (Key key : keys) {
             for (int vk : key.keys) {
                 if (vk == keyNum) {
-                    for (Iterator<KeyToggle> iter = keyToggles.iterator(); iter.hasNext(); ) {
-                        KeyToggle toggle = iter.next();
-                        if (toggle.hasKey(key)) {
-                            if (!toggle.call(pressed)) {
-                                iter.remove();
-                            }
-                            //if consumed was already true keep it that way
-                            consumed = consumed || toggle.willConsume(pressed);
-                        }
-                    }
-                    if (!consumed)
-                        key.toggle(pressed);
+                    key.toggle(pressed);
                 }
             }
         }
@@ -279,37 +241,10 @@ public class Input implements MouseListener, MouseMotionListener, MouseWheelList
         y = p.y;
     }
 
-    public void anyKey(AnyKey event) {
-        pressEvent = event;
-        anykeyOn = true;
-    }
-
-    public void closeAnyKey() {
-        pressEvent = null;
-        anykeyOn = false;
-    }
-
     public Key key(int[] ints, String name) {
         return new Key(name, ints);
     }
 
-    public void addKeyListener(KeyToggleListener keyToggle, Key... keys) {
-        keyToggles.add(new KeyToggle(keyToggle, keys));
-    }
-
-    public void removeKeyListern(KeyToggleListener keyToggle, Key... keys) {
-        for (Iterator<KeyToggle> iterator = keyToggles.iterator(); iterator.hasNext(); ) {
-            KeyToggle toggle = iterator.next();
-            if (toggle.listener == keyToggle) {
-                for (Key key : keys) {
-                    toggle.keys.remove(key);
-                }
-                if (toggle.keys.isEmpty()) {
-                    iterator.remove();
-                }
-            }
-        }
-    }
 
     public interface WheelListener {
 
@@ -322,68 +257,8 @@ public class Input implements MouseListener, MouseMotionListener, MouseWheelList
 
     }
 
-    private class KeyToggle {
-
-        private final KeyToggleListener listener;
-        //we suspect to only need one key
-        List<Key> keys = new ArrayList<Key>(1);
-
-        private KeyToggle(KeyToggleListener listener, Key[] listenKeys) {
-            this.listener = listener;
-
-            Collections.addAll(this.keys, listenKeys);
-        }
-
-        private boolean hasKey(Key key) {
-            return keys.contains(key);
-        }
-
-        private boolean call(boolean state) {
-            return listener.onKeyToggle(state);
-        }
-
-        public boolean willConsume(boolean state) {
-            return listener.shouldConsume(state);
-        }
-    }
-
-    public interface KeyToggleListener {
 
 
-        /**
-         * Whether the key press should be consumed so that the normal keys don't get trigged
-         *
-         * @param state the new state of the key {@code true} when the key is pressed down {@code
-         *              false} when the key is released
-         * @return whether the key should be consumed
-         */
-        boolean shouldConsume(boolean state);
-
-        /**
-         * Called when the keys to which this Listener listens
-         *
-         * @param state the new state of the key {@code true} when the key is pressed down {@code
-         *              false} when the key is released
-         * @return whether the Listener should still be listening
-         */
-        boolean onKeyToggle(boolean state);
-
-    }
-
-
-    /**
-     * Interface for checking if any keys is pressed and stopping the input until removed
-     */
-    public interface AnyKey {
-
-        /**
-         * called when a key is pressed add this with (Input.anyKey(AnyKey event));
-         *
-         * @param event the keyevent which is trigged
-         * @return wheter to stop listening
-         */
-        boolean onPress(KeyEvent event);
-    }
 
     public class Key {
         private boolean pressed, clicked;
@@ -438,7 +313,7 @@ public class Input implements MouseListener, MouseMotionListener, MouseWheelList
         }
 
         public void removeCode(int code) {
-            List<Integer> ints = new ArrayList<Integer>();
+            List<Integer> ints = new ArrayList<>();
             for (int key : keys) {
                 if (key != code) {
                     ints.add(key);

@@ -40,6 +40,7 @@ public class Display extends Canvas implements Runnable {
     private String title;
 
     private DisplayRenderer renderer;
+    private Input input;
 
     public Display(String title) {
         this.title = title;
@@ -66,6 +67,7 @@ public class Display extends Canvas implements Runnable {
         }
 
         frame.setLocationRelativeTo(null);
+        input = new Input(this);
         frame.setVisible(true);
 
 
@@ -184,5 +186,9 @@ public class Display extends Canvas implements Runnable {
 
     public DisplayRenderer getRenderer() {
         return renderer;
+    }
+
+    public Tickable getInput() {
+        return input;
     }
 }
