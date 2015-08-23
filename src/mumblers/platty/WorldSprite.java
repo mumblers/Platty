@@ -8,8 +8,7 @@ import mumblers.platty.world.World;
 import mumblers.platty.world.WorldListener;
 
 import javax.imageio.ImageIO;
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
@@ -114,6 +113,7 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
             }
         }
         playerSprite.render(g, x + player.getLocation().x - currentCameraX, y + player.getLocation().y);
+        g.drawString("x" + player.getLocation().x, 100, 100);
     }
 
     private void updateScroll(int width) {
@@ -122,6 +122,7 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
         } else {
             cameraX = player.getLocation().x - width / 4;
         }
+        cameraX = player.getLocation().x - width / 2;
         cameraX = Math.max(0, cameraX);
         if (currentCameraX > cameraX) {
             currentCameraX = Math.max(cameraX, currentCameraX - movementspeed * CAMERA_MOD);

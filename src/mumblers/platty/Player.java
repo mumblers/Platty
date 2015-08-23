@@ -31,6 +31,12 @@ public class Player implements Tickable {
     private int jumpCounter = 0;
     private boolean jumpLocked = false;
 
+    public static final int MOVEMENT_SPEED = 7;
+    public static final int FALL_SPEED = 5;
+    public static final int JUMP_SPEED = FALL_SPEED + 5;
+    public static final int SWITCH_OTHER_WALKING = 100;
+    public static final int JUMP_TIME = 10;
+
     public Player(Input input, World world) {
         this.input = input;
         this.world = world;
@@ -48,8 +54,8 @@ public class Player implements Tickable {
         else if (input.up.isPressed()) {
             movement = MovementStatus.JUMPING;
 
-            if (jumpCounter < 100 && !jumpLocked)
-                location.y -= 10;
+            if (jumpCounter < JUMP_TIME && !jumpLocked && !hasBlockAbove())
+                location.y -= JUMP_SPEED;
             jumpCounter++;
 
         } else
@@ -58,17 +64,17 @@ public class Player implements Tickable {
 
         if (input.right.isPressed() || input.left.isPressed()) {
             walkCounter++;
-            if (walkCounter >= 5)
+            if (walkCounter >= SWITCH_OTHER_WALKING)
                 movement = MovementStatus.WALKING1;
             else
                 movement = MovementStatus.WALKING2;
-            if (walkCounter >= 10)
+            if (walkCounter >= SWITCH_OTHER_WALKING * 2)
                 walkCounter = 0;
 
-            if (input.right.isPressed()) {
-                location.x += 7;
-            } else {
-                location.x -= 7;
+            if (input.right.isPressed() && !hasBlockRight()) {
+                location.x += MOVEMENT_SPEED;
+            } else if (input.left.isPressed() && !hasBlockLeft()) {
+                location.x -= MOVEMENT_SPEED;
             }
         }
 
@@ -76,19 +82,27 @@ public class Player implements Tickable {
             jumpCounter = 0;
             jumpLocked = false;
         } else {
-            location.y += 5;
+            location.y += FALL_SPEED;
         }
 
         if (!input.up.isPressed() && jumpCounter > 0)
             jumpLocked = true;
     }
 
-    private void updateLocation() {
-
+    public boolean hasBlockBeneith() {
+        return world.blockAtPixel(location.x, location.y + 1) || world.blockAtPixel(location.x + 66, location.y + 1);
     }
 
-    public boolean hasBlockBeneith() {
-        return world.blockAtPixel(location.x, location.y - 1) || world.blockAtPixel(location.x + 66, location.y - 1);
+    public boolean hasBlockAbove() {
+        return world.blockAtPixel(location.x, location.y - 93) || world.blockAtPixel(location.x + 66, location.y - 93);
+    }
+
+    public boolean hasBlockLeft() {
+        return world.blockAtPixel(location.x - 1, location.y - 1) || world.blockAtPixel(location.x - 1, location.y - 70);
+    }
+
+    public boolean hasBlockRight() {
+        return world.blockAtPixel(location.x + 67, location.y - 1) || world.blockAtPixel(location.x + 66, location.y - 70);
     }
 
 
