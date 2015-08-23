@@ -17,6 +17,7 @@ import java.io.IOException;
  */
 public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener {
 
+    private static final Color BACKGROUND = new Color(100, 100, 255);
     /**
      * The world to draw
      */
@@ -31,11 +32,6 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
      * The id inside the blockImages[][] a empty block has
      */
     private static final int EMPTY_IMAGE_ID = -1;
-
-    /**
-     * The width and height a image is drawn onto the screen
-     */
-    private static final int IMAGE_RESIZED_SIZE = 32;
 
     /**
      * Here are all the blockImages saved. In the tick is calculated
@@ -80,16 +76,15 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
 
     @Override
     public void render(Graphics2D g, int x, int y, int width, int height) {
-        g.setColor(Color.black);
+        g.setColor(BACKGROUND);
+        g.fillRect(x, y, width, height);
         for (int row = 0; row < world.getBlockHeight(); row++) {
             for (int col = 0; col < world.getBlockWidth(); col++) {
                 int imgId = blockImages[row][col];
                 int xx = col * SPRITE_SIZE;
                 int yy = row * SPRITE_SIZE;
-                if (imgId == EMPTY_IMAGE_ID) {
-                    g.fillRect(xx, yy, SPRITE_SIZE, SPRITE_SIZE);
-                } else {
-                    g.drawImage(images[imgId], xx, yy, Color.black, null);
+                if (imgId != EMPTY_IMAGE_ID) {
+                    g.drawImage(images[imgId], xx, yy, null);
                 }
             }
         }
