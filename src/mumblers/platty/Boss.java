@@ -62,8 +62,7 @@ public class Boss extends Sprite implements Tickable {
             direction = Direction.RIGHT;
             if (playerDistance < 130) {
                 if (bombCount <= 0) {
-                    world.addBomb(boundingBox.x, boundingBox.y + 10);
-                    bombCount = 50;
+                    makeBomb();
                 }
             } else {
                 boundingBox.x += SPEED;
@@ -72,15 +71,22 @@ public class Boss extends Sprite implements Tickable {
             direction = Direction.LEFT;
             if (playerDistance < 130) {
                 if (bombCount <= 0) {
-                    world.addBomb(boundingBox.x, boundingBox.y + 10);
-                    bombCount = 50;
+                    makeBomb();
                 }
             } else {
                 boundingBox.x -= SPEED;
             }
         }
+        if (bombCount < -150) {
+            makeBomb();
+        }
 
         bombCount--;
+    }
+
+    private void makeBomb() {
+        world.addBomb(boundingBox.x - boundingBox.width / 2, boundingBox.y + 10);
+        bombCount = 50;
     }
 
     public void render(Graphics2D g, int cameraX) {

@@ -11,6 +11,7 @@ import java.awt.*;
  */
 public class Player implements Tickable {
 
+    public static final Dimension SIZE = new Dimension(66, 92);
     /**
      * For the player only RIGHT and LEFT
      */
@@ -21,7 +22,7 @@ public class Player implements Tickable {
      */
     private MovementStatus movement = MovementStatus.STANDING;
 
-    private Point location = new Point(100, 100);
+    private Point location = new Point(6000, 100);
 
     private Input input;
 
@@ -136,5 +137,9 @@ public class Player implements Tickable {
 
     public Point getLocation() {
         return location;
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(location.x, location.y - SIZE.height, SIZE.width, SIZE.height);
     }
 }

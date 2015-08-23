@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * Created by Sinius on 19-8-2015.
@@ -105,7 +106,16 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
         }
         playerSprite.render(g, x + player.getLocation().x - currentCameraX, y + player.getLocation().y);
         g.drawString("x" + player.getLocation().x, 100, 100);
-        boss.render(g, cameraX);
+        boss.render(g, currentCameraX);
+        for (Iterator<Bomb> iterator = world.getBombs().iterator(); iterator.hasNext(); ) {
+            Bomb bomb = iterator.next();
+            if (bomb.removeMe) {
+                iterator.remove();
+                continue;
+            }
+            bomb.tick(world);
+            bomb.render(g, currentCameraX);
+        }
     }
 
     private void updateScroll(int width) {

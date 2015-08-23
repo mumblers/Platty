@@ -1,5 +1,6 @@
 package mumblers.platty.world;
 
+import mumblers.platty.Bomb;
 import mumblers.platty.Boss;
 import mumblers.platty.Player;
 import mumblers.platty.WorldSprite;
@@ -36,6 +37,7 @@ public class World {
     private int blockWidth;// = blocks[0].length;
     private int blockHeight;// = blocks.length;
     private static final char WALL_TILE = '1';
+    private List<Bomb> bombs = new ArrayList<>(4);
 
     public World(Input input) {
         blockWidth = defaultWorld[0].length();
@@ -122,7 +124,14 @@ public class World {
         return boss;
     }
 
-    public void addBomb(int x, int i) {
-        System.out.println("ADDING BOMB");
+    public void addBomb(int x, int y) {
+        Bomb bomb = new Bomb();
+        bomb.boundingBox.x = x - Bomb.BOMB_SIZE.width / 2;
+        bomb.boundingBox.y = y - Bomb.BOMB_SIZE.height / 2;
+        bombs.add(bomb);
+    }
+
+    public List<Bomb> getBombs() {
+        return bombs;
     }
 }
