@@ -72,5 +72,16 @@ public class Player implements Tickable {
         } else
             movement = MovementStatus.STANDING;
 
+        updateLocation();
+    }
+
+    private void updateLocation() {
+        if (movement == MovementStatus.WALKING1 || movement == MovementStatus.WALKING2) {
+            if (direction == Direction.RIGHT) {
+                location.x += 7;
+            } else {
+                location.x -= 7;
+            }
+        }
     }
 }
