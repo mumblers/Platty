@@ -52,6 +52,7 @@ public class Display extends Canvas implements Runnable {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.add(this, BorderLayout.CENTER);
+        frame.setResizable(false);
 
 
         //Make sure the frame is packed
