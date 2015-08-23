@@ -5,6 +5,6 @@ package mumblers.platty;
  */
 public enum MovementStatus {
 
-    STANDING, DUCKING, HURTING, JUMPING, WALKING;
+    STANDING, DUCKING, HURTING, JUMPING, WALKING1, WALKING2;
 
 }

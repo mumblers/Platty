@@ -46,7 +46,7 @@ public class Platty implements DisplayRenderer {
     @Override
     public void render(Graphics2D g, Dimension size) {
         worldSprite.render(g, 0, 0, display.getWidth(), display.getHeight());
-        playerSprite.render(g, 0, 0, display.getWidth(), display.getHeight());
+        playerSprite.render(g, player.getLocation().x, player.getLocation().y);
     }
 
     @Override
