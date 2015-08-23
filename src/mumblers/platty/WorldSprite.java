@@ -61,12 +61,15 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
 
     public static final int SPRITE_SIZE = 70;
 
+    private static BufferedImage background;
+
     static {
         try {
             BufferedImage sheet = ImageIO.read(Platty.class.getResourceAsStream("wall.png"));
             for (int i = 0; i < images.length; i++) {
                 images[i] = sheet.getSubimage((i % 2) * SPRITE_SIZE, (i / 2) * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
             }
+            background = ImageIO.read(Platty.class.getResourceAsStream("background.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,7 +96,8 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
     @Override
     public void render(Graphics2D g, int x, int y, int width, int height) {
         g.setColor(BACKGROUND);
-        g.fillRect(x, y, width, height);
+//        g.fillRect(x, y, width, height);
+        g.drawImage(background, 0, 0, width, height, null);
         updateScroll(width);
         for (int row = 0; row < blockImages.length; row++) {
             for (int col = 0; col < blockImages[0].length; col++) {
@@ -109,7 +113,7 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
     }
 
     private void updateScroll(int width) {
-        if (headingRight) {
+        if (player.getDirection() == Direction.LEFT) {
             cameraX = player.getLocation().x - (width * 3) / 4;
         } else {
             cameraX = player.getLocation().x - width / 4;
