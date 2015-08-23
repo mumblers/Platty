@@ -20,6 +20,7 @@ import java.io.IOException;
 public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener {
 
     private static final Color BACKGROUND = new Color(100, 100, 255);
+    private static final int CAMERA_MOD = 4;
     /**
      * The world to draw
      */
@@ -49,6 +50,7 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
     private boolean shouldDoTick = true;
 
     private int cameraX = 0;
+    private int currentCameraX = 0;
     private final int movementspeed = 12;
 
     private boolean headingRight = true;
@@ -93,7 +95,7 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
         for (int row = 0; row < blockImages.length; row++) {
             for (int col = 0; col < blockImages[0].length; col++) {
                 int imgId = blockImages[row][col];
-                int xx = col * SPRITE_SIZE - cameraX;
+                int xx = col * SPRITE_SIZE - currentCameraX;
                 int yy = row * SPRITE_SIZE;
                 if (imgId != EMPTY_IMAGE_ID) {
                     g.drawImage(images[imgId], xx, yy, null);
@@ -101,7 +103,7 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
             }
         }
         g.setColor(new Color(12, 145, 85));
-        g.fillRect(pX - cameraX, 10, 70, 100);
+        g.fillRect(pX - currentCameraX, 10, 70, 100);
     }
 
     private void updateScroll(int width, int height) {
@@ -111,6 +113,11 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
             cameraX = pX - width / 4;
         }
         cameraX = Math.max(0, cameraX);
+        if (currentCameraX > cameraX) {
+            currentCameraX = Math.max(cameraX, currentCameraX - movementspeed * CAMERA_MOD);
+        } else if (currentCameraX < cameraX) {
+            currentCameraX = Math.min(cameraX, currentCameraX + movementspeed * CAMERA_MOD);
+        }
     }
 
     @Override
