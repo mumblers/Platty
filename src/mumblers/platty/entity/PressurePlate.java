@@ -2,7 +2,7 @@ package mumblers.platty.entity;
 
 import mumblers.platty.MovementStatus;
 import mumblers.platty.Player;
-import mumblers.platty.graphics.Tickable;
+import mumblers.platty.engine.Tickable;
 
 import java.awt.*;
 

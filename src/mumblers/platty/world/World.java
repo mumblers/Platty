@@ -1,8 +1,8 @@
 package mumblers.platty.world;
 
 import mumblers.platty.*;
+import mumblers.platty.engine.Input;
 import mumblers.platty.entity.PressurePlate;
-import mumblers.platty.graphics.Input;
 
 import java.awt.*;
 import java.util.ArrayList;

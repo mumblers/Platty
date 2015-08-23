@@ -1,14 +1,11 @@
 package mumblers.platty;
 
+import mumblers.platty.engine.Tickable;
 import mumblers.platty.graphics.Sprite;
-import mumblers.platty.graphics.Tickable;
 import mumblers.platty.world.World;
 
 import javax.imageio.ImageIO;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 

@@ -1,7 +1,7 @@
 package mumblers.platty;
 
-import mumblers.platty.graphics.Input;
-import mumblers.platty.graphics.Tickable;
+import mumblers.platty.engine.Input;
+import mumblers.platty.engine.Tickable;
 import mumblers.platty.world.World;
 
 import java.awt.*;

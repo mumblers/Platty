@@ -1,8 +1,8 @@
 package mumblers.platty;
 
-import mumblers.platty.graphics.Display;
-import mumblers.platty.graphics.DisplayRenderer;
-import mumblers.platty.graphics.Tickable;
+import mumblers.platty.engine.Display;
+import mumblers.platty.engine.DisplayImplementor;
+import mumblers.platty.engine.Tickable;
 import mumblers.platty.world.World;
 
 import java.awt.*;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by Sinius on 19-8-2015.
  */
-public class Platty implements DisplayRenderer {
+public class Platty implements DisplayImplementor {
 
     public ArrayList<Tickable> tickers = new ArrayList<>();
 

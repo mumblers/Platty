@@ -1,7 +1,6 @@
-package mumblers.platty.graphics;
+package mumblers.platty.engine;
 
-import java.awt.Component;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;

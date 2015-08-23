@@ -1,8 +1,8 @@
 package mumblers.platty;
 
-import mumblers.platty.graphics.Display;
+import mumblers.platty.engine.Display;
+import mumblers.platty.engine.Tickable;
 import mumblers.platty.graphics.Sprite;
-import mumblers.platty.graphics.Tickable;
 import mumblers.platty.world.World;
 import mumblers.platty.world.WorldListener;
 

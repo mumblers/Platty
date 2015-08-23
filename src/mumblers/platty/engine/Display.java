@@ -1,11 +1,9 @@
-package mumblers.platty.graphics;
+package mumblers.platty.engine;
 
 import mumblers.platty.WorldSprite;
 import mumblers.platty.world.World;
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -39,7 +37,7 @@ public class Display extends Canvas implements Runnable {
 
     private String title;
 
-    private DisplayRenderer renderer;
+    private DisplayImplementor renderer;
     private Input input;
 
     public Display(String title) {
@@ -181,11 +179,11 @@ public class Display extends Canvas implements Runnable {
         this.height = size.height;
     }
 
-    public void setRenderer(DisplayRenderer renderer) {
+    public void setRenderer(DisplayImplementor renderer) {
         this.renderer = renderer;
     }
 
-    public DisplayRenderer getRenderer() {
+    public DisplayImplementor getRenderer() {
         return renderer;
     }
 
