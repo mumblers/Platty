@@ -1,10 +1,10 @@
 package mumblers.platty.world;
 
-import mumblers.platty.*;
+import mumblers.platty.Boss;
+import mumblers.platty.Player;
+import mumblers.platty.WorldSprite;
 import mumblers.platty.engine.Input;
-import mumblers.platty.entity.PressurePlate;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,19 +36,13 @@ public class World {
     private int blockWidth;// = blocks[0].length;
     private int blockHeight;// = blocks.length;
     private static final char WALL_TILE = '1';
-    private List<Bomb> bombs = new ArrayList<>(4);
-    private PressurePlate plate;
+
 
     public World(Input input) {
         blockWidth = defaultWorld[0].length();
         blockHeight = defaultWorld.length;
         blocks = new boolean[blockHeight][blockWidth];
         makeBlocksFromString(defaultWorld);
-        player = new Player(input, this);
-        boss = new Boss(this);
-        plate = new PressurePlate(new Rectangle(new Point(getBlockWidth() * WorldSprite.SPRITE_SIZE - 300,
-                (getBlockHeight() - 2) * WorldSprite.SPRITE_SIZE), new Dimension(130, 70)), player);
-        Platty.thiss.tickers.add(plate);
     }
 
     private void makeBlocksFromString(String[] world) {
@@ -117,28 +111,5 @@ public class World {
 
     public int getBlockWidth() {
         return blockWidth;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Boss getBoss() {
-        return boss;
-    }
-
-    public void addBomb(int x, int y) {
-        Bomb bomb = new Bomb();
-        bomb.boundingBox.x = x - Bomb.BOMB_SIZE.width / 2;
-        bomb.boundingBox.y = y - Bomb.BOMB_SIZE.height / 2;
-        bombs.add(bomb);
-    }
-
-    public List<Bomb> getBombs() {
-        return bombs;
-    }
-
-    public PressurePlate getPlate() {
-        return plate;
     }
 }

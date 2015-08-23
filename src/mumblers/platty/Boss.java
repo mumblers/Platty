@@ -1,7 +1,9 @@
 package mumblers.platty;
 
+import mumblers.platty.engine.Drawable;
+import mumblers.platty.engine.GameObject;
+import mumblers.platty.engine.Hitboxable;
 import mumblers.platty.engine.Tickable;
-import mumblers.platty.graphics.Sprite;
 import mumblers.platty.world.World;
 
 import javax.imageio.ImageIO;
@@ -10,21 +12,19 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
- * todo
- *
  * @author davidot
  */
-public class Boss extends Sprite implements Tickable {
+public class Boss extends GameObject implements Tickable, Drawable, Hitboxable {
 
     private static final int SPEED = 7;
-    private Dimension size = new Dimension(70, 47);
+
     private Rectangle boundingBox;
-
-
     private Direction direction = Direction.LEFT;
-
     private State state = State.HANGING;
+
     private World world;
+    private Player player;
+
     private int flyCounter = 0;
     private int bombCount = 0;
 
@@ -32,14 +32,18 @@ public class Boss extends Sprite implements Tickable {
         return ImageIO.read(Platty.class.getResourceAsStream("bat/" + name + ".png"));
     }
 
-    public Boss(World world) {
+    //new Point(world.getBlockWidth() * WorldSprite.SPRITE_SIZE - 300, 70)
+    public Boss(Point location, World world, Player player) {
+        super();
         this.world = world;
-        boundingBox = new Rectangle(new Point(world.getBlockWidth() * WorldSprite.SPRITE_SIZE - 300, 70), size);
+        this.player = player;
+        Dimension size = new Dimension(70, 47);
+        boundingBox = new Rectangle(location, size);
     }
 
     @Override
     public void tick() {
-        int playerX = world.getPlayer().getLocation().x;
+        int playerX = player.getHitbox().x;
         int playerDistance = Math.abs(boundingBox.x - playerX);
         if (state == State.HANGING) {
             if (playerDistance < 300) {
@@ -82,12 +86,27 @@ public class Boss extends Sprite implements Tickable {
     }
 
     private void makeBomb() {
-        world.addBomb(boundingBox.x - boundingBox.width / 2, boundingBox.y + 10);
+        addBomb(boundingBox.x - boundingBox.width / 2, boundingBox.y + 10);
         bombCount = 50;
     }
 
-    public void render(Graphics2D g, int cameraX) {
-        render(g, boundingBox.x - cameraX, boundingBox.y);
+    @Override
+    public void draw(Graphics2D g, int xScroll) {
+        int x = boundingBox.x - xScroll;
+        int y = boundingBox.y;
+        BufferedImage img = direction == Direction.RIGHT ? state.imgRight : state.imgLeft;
+        g.drawImage(img, x - img.getWidth(), y - img.getHeight(), null);
+    }
+
+    @Override
+    public Rectangle getHitbox() {
+        return boundingBox;
+    }
+
+    public void addBomb(int x, int y) {
+        Bomb bomb = new Bomb(world, player);
+        bomb.getHitbox().x = x - Bomb.BOMB_SIZE.width / 2;
+        bomb.getHitbox().y = y - Bomb.BOMB_SIZE.height / 2;
     }
 
     private enum State {
@@ -111,27 +130,5 @@ public class Boss extends Sprite implements Tickable {
                 throw new IllegalArgumentException(e);
             }
         }
-    }
-
-
-    @Override
-    public int getWidth() {
-        return boundingBox.width;
-    }
-
-    @Override
-    public int getHeight() {
-        return boundingBox.height;
-    }
-
-    @Override
-    public void render(Graphics2D g, int x, int y, int width, int height) {
-        BufferedImage img = direction == Direction.RIGHT ? state.imgRight : state.imgLeft;
-        g.drawImage(img, x - img.getWidth(), y - img.getHeight(), null);
-    }
-
-    @Override
-    public void renderRotated(Graphics2D g, int x, int y, int angle, double xScale, double yScale, int xOff, int yOff) {
-        //dont you fuck
     }
 }

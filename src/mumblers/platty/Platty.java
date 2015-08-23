@@ -2,26 +2,25 @@ package mumblers.platty;
 
 import mumblers.platty.engine.Display;
 import mumblers.platty.engine.DisplayImplementor;
-import mumblers.platty.engine.Tickable;
+import mumblers.platty.engine.GameObject;
+import mumblers.platty.engine.Input;
 import mumblers.platty.world.World;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * Created by Sinius on 19-8-2015.
  */
 public class Platty implements DisplayImplementor {
 
-    public ArrayList<Tickable> tickers = new ArrayList<>();
-
     Display display;
     WorldSprite worldSprite;
     World world;
-
-    public boolean toReset;
+    Input input;
 
     public static Platty thiss;
+
+    private Player player;
 
     public Platty() {
         thiss = this;
@@ -30,36 +29,31 @@ public class Platty implements DisplayImplementor {
         display.setRenderer(this);
         display.start();
 
-        resetGame();
+        input = display.getInput();
+
+        initGame();
+    }
+
+    private void initGame() {
+        world = new World(display.getInput());
+        worldSprite = new WorldSprite(world);
+
+        player = new Player(display.getInput(), world);
     }
 
     @Override
     public void render(Graphics2D g, Dimension size) {
-        if (worldSprite != null)
-            worldSprite.render(g, 0, 0, display.getWidth(), display.getHeight());
+        GameObject.drawGameObjects(g, player.calculateXScroll(display.getWidth()));
     }
 
     @Override
     public void tick() {
-        for (Tickable ticker : tickers) {
-            ticker.tick();
-        }
-        if (toReset) {
-            tickers.clear();
-
-            world = new World(display.getInput());
-
-            worldSprite = new WorldSprite(world);
-            tickers.add(world.getPlayer());
-            tickers.add(world.getBoss());
-            tickers.add(worldSprite);
-            tickers.add(display.getInput());
-            toReset = false;
-        }
+        GameObject.tickGameObjects();
     }
 
+
     public void resetGame() {
-        toReset = true;
+        //todo: reset!
     }
 
 

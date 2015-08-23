@@ -5,6 +5,6 @@ package mumblers.platty;
  */
 public enum Direction {
 
-    UP, DOWN, LEFT, RIGHT;
+    LEFT, RIGHT;
 
 }

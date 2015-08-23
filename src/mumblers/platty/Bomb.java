@@ -1,20 +1,20 @@
 package mumblers.platty;
 
+import mumblers.platty.engine.Drawable;
+import mumblers.platty.engine.GameObject;
+import mumblers.platty.engine.Hitboxable;
+import mumblers.platty.engine.Tickable;
 import mumblers.platty.world.World;
 
 import javax.imageio.ImageIO;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
- * todo
- *
  * @author davidot
  */
-public class Bomb {
+public class Bomb extends GameObject implements Drawable, Tickable, Hitboxable {
 
     public static final Dimension BOMB_SIZE = new Dimension(104, 116);
     private static BufferedImage img;
@@ -31,19 +31,33 @@ public class Bomb {
 
     private int counter = 0;
 
-    public Rectangle boundingBox = new Rectangle(BOMB_SIZE);
-    public boolean removeMe;
+    private Rectangle boundingBox = new Rectangle(BOMB_SIZE);
+    private World world;
+    private Player player;
 
-    public void render(Graphics2D g, int cameraX) {
-        g.drawImage(++counter % 20 > 10 ? img : img2, boundingBox.x - cameraX, boundingBox.y, null);
+    public Bomb(World world, Player player) {
+        super();
+        this.world = world;
+        this.player = player;
     }
 
-    public void tick(World world) {
+    @Override
+    public void draw(Graphics2D g, int xScroll) {
+        g.drawImage(++counter % 20 > 10 ? img : img2, boundingBox.x - xScroll, boundingBox.y, null);
+    }
+
+    @Override
+    public Rectangle getHitbox() {
+        return boundingBox;
+    }
+
+    @Override
+    public void tick() {
         boundingBox.y += Player.FALL_SPEED;
         if (world.blockAtPixel(boundingBox.x, boundingBox.y + boundingBox.height)) {
-            removeMe = true;
+            removeMe();
         }
-        if (boundingBox.intersects(world.getPlayer().getBounds())) {
+        if (boundingBox.intersects(player.getHitbox())) {
             Platty.thiss.resetGame();
         }
     }

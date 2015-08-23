@@ -1,8 +1,8 @@
 package mumblers.platty;
 
-import mumblers.platty.engine.Display;
+import mumblers.platty.engine.Drawable;
+import mumblers.platty.engine.GameObject;
 import mumblers.platty.engine.Tickable;
-import mumblers.platty.graphics.Sprite;
 import mumblers.platty.world.World;
 import mumblers.platty.world.WorldListener;
 
@@ -16,12 +16,11 @@ import java.util.Iterator;
  * Created by Sinius on 19-8-2015.
  * World drawer
  */
-public class WorldSprite extends Sprite implements Tickable, WorldListener {
+public class WorldSprite extends GameObject implements Tickable, WorldListener, Drawable {
 
     private static final Color BACKGROUND = new Color(100, 100, 255);
     private static final int CAMERA_MOD = 4;
     private final Player player;
-    private final PlayerSprite playerSprite;
     private final Boss boss;
     /**
      * The world to draw
@@ -77,59 +76,7 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
         worldSizeUpdated();
     }
 
-    @Override
-    public int getWidth() {
-        return Display.WIDTH;
-    }
 
-    @Override
-    public int getHeight() {
-        return Display.HEIGHT;
-    }
-
-    @Override
-    public void render(Graphics2D g, int x, int y, int width, int height) {
-        g.setColor(BACKGROUND);
-        g.drawImage(background, x, y, width / 3, height, null);
-        g.drawImage(background, x + width / 3, y, width / 3, height, null);
-        g.drawImage(background, x + (width - width / 3), y, width / 3, height, null);
-        updateScroll(width);
-        for (int row = 0; row < blockImages.length; row++) {
-            for (int col = 0; col < blockImages[0].length; col++) {
-                int imgId = blockImages[row][col];
-                int xx = x + col * SPRITE_SIZE - currentCameraX;
-                int yy = y + row * SPRITE_SIZE;
-                if (imgId != EMPTY_IMAGE_ID) {
-                    g.drawImage(images[imgId], xx, yy, null);
-                }
-            }
-        }
-        world.getPlate().render(g, currentCameraX);
-        playerSprite.render(g, x + player.getLocation().x - currentCameraX, y + player.getLocation().y);
-        g.drawString("x" + player.getLocation().x, 100, 100);
-        boss.render(g, currentCameraX);
-
-        for (Iterator<Bomb> iterator = world.getBombs().iterator(); iterator.hasNext(); ) {
-            Bomb bomb = iterator.next();
-            if (bomb.removeMe) {
-                iterator.remove();
-                continue;
-            }
-            bomb.tick(world);
-            bomb.render(g, currentCameraX);
-        }
-
-
-    }
-
-    private void updateScroll(int width) {
-        currentCameraX = Math.max(0, player.getLocation().x - width / 2);
-    }
-
-    @Override
-    public void renderRotated(Graphics2D g, int x, int y, int angle, double xScale, double yScale, int xOff, int yOff) {
-        //nothing
-    }
 
     @Override
     public void tick() {
@@ -169,5 +116,38 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
         }
 
         shouldDoTick = true;
+    }
+
+    @Override
+    public void draw(Graphics2D g, int xScroll) {
+        g.setColor(BACKGROUND);
+        g.drawImage(background, x, y, width / 3, height, null);
+        g.drawImage(background, x + width / 3, y, width / 3, height, null);
+        g.drawImage(background, x + (width - width / 3), y, width / 3, height, null);
+        updateScroll(width);
+        for (int row = 0; row < blockImages.length; row++) {
+            for (int col = 0; col < blockImages[0].length; col++) {
+                int imgId = blockImages[row][col];
+                int xx = x + col * SPRITE_SIZE - currentCameraX;
+                int yy = y + row * SPRITE_SIZE;
+                if (imgId != EMPTY_IMAGE_ID) {
+                    g.drawImage(images[imgId], xx, yy, null);
+                }
+            }
+        }
+        world.getPlate().render(g, currentCameraX);
+        playerSprite.render(g, x + player.getLocation().x - currentCameraX, y + player.getLocation().y);
+        g.drawString("x" + player.getLocation().x, 100, 100);
+        boss.render(g, currentCameraX);
+
+        for (Iterator<Bomb> iterator = world.getBombs().iterator(); iterator.hasNext(); ) {
+            Bomb bomb = iterator.next();
+            if (bomb.removeMe) {
+                iterator.remove();
+                continue;
+            }
+            bomb.tick(world);
+            bomb.render(g, currentCameraX);
+        }
     }
 }

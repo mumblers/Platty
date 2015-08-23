@@ -1,31 +1,27 @@
 package mumblers.platty;
 
-import mumblers.platty.engine.Input;
-import mumblers.platty.engine.Tickable;
+import mumblers.platty.engine.*;
 import mumblers.platty.world.World;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * Created by Sinius15 on 23-8-2015.
  */
-public class Player implements Tickable {
+public class Player extends GameObject implements Tickable, Hitboxable, Drawable {
 
     public static final Dimension SIZE = new Dimension(66, 92);
-    /**
-     * For the player only RIGHT and LEFT
-     */
-    private Direction direction = Direction.RIGHT;
 
-    /**
-     * What movement is the player doing? This variable will give the answer
-     */
+    private Direction direction = Direction.RIGHT;
     private MovementStatus movement = MovementStatus.STANDING;
 
-    private Point location = new Point(6000, 100);
+    //the hitbox where the corner is left bottom!
+    private Rectangle box = new Rectangle(new Point(6000, 100), SIZE);
 
     private Input input;
-
     private World world;
 
     private int walkCounter = 0;
@@ -37,6 +33,37 @@ public class Player implements Tickable {
     public static final int JUMP_SPEED = FALL_SPEED + 5;
     public static final int SWITCH_OTHER_WALKING = 5;
     public static final int JUMP_TIME = 30;
+
+    /**
+     * STAND L
+     * STAND R
+     * WALK 1 L
+     * WALK 1 R
+     * WALK 2 L
+     * WALK 2 R
+     * DUCK L
+     * DUCK R
+     * HURT L
+     * HURT R
+     * JUMP L
+     * JUMP R
+     */
+    private static BufferedImage[] images = null;
+
+    static {
+        System.out.println("Loading player images");
+        images = new BufferedImage[12];
+        for (int i = 0; i < 12; i += 2) {
+            try {
+                images[i] = ImageIO.read(Platty.class.getResourceAsStream("player/alienBlue_" + (i / 2) + ".png"));
+                BufferedImage rotated = new BufferedImage(images[i].getWidth(), images[i].getHeight(), BufferedImage.TYPE_INT_ARGB);
+                rotated.createGraphics().drawImage(images[i], images[i].getWidth(), 0, -images[i].getWidth(), images[i].getHeight(), null);
+                images[i + 1] = rotated;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public Player(Input input, World world) {
         this.input = input;
@@ -56,7 +83,7 @@ public class Player implements Tickable {
             movement = MovementStatus.JUMPING;
 
             if (jumpCounter < JUMP_TIME && !jumpLocked && !hasBlockAbove())
-                location.y -= JUMP_SPEED;
+                box.y -= JUMP_SPEED;
             jumpCounter++;
 
         } else
@@ -73,9 +100,9 @@ public class Player implements Tickable {
                 walkCounter = 0;
 
             if (input.right.isPressed() && !hasBlockRight()) {
-                location.x += MOVEMENT_SPEED;
+                box.x += MOVEMENT_SPEED;
             } else if (input.left.isPressed() && !hasBlockLeft()) {
-                location.x -= MOVEMENT_SPEED;
+                box.x -= MOVEMENT_SPEED;
             }
         }
 
@@ -83,7 +110,7 @@ public class Player implements Tickable {
             jumpCounter = 0;
             jumpLocked = false;
         } else {
-            location.y += FALL_SPEED;
+            box.y += FALL_SPEED;
         }
 
         if (!input.up.isPressed() && jumpCounter > 0)
@@ -94,25 +121,28 @@ public class Player implements Tickable {
         }
     }
 
-    public boolean isOutOfBounds() {
-        return location.getY() > world.getBlockHeight() * WorldSprite.SPRITE_SIZE + WorldSprite.SPRITE_SIZE;
+    public int calculateXScroll(int width) {
+        return Math.max(0, box.x - width / 2);
+    }
 
+    public boolean isOutOfBounds() {
+        return box.getY() > world.getBlockHeight() * WorldSprite.SPRITE_SIZE + WorldSprite.SPRITE_SIZE;
     }
 
     public boolean hasBlockBeneith() {
-        return world.blockAtPixel(location.x, location.y + 1) || world.blockAtPixel(location.x + 66, location.y + 1);
+        return world.blockAtPixel(box.x, box.y + 1) || world.blockAtPixel(box.x + 66, box.y + 1);
     }
 
     public boolean hasBlockAbove() {
-        return world.blockAtPixel(location.x, location.y - 66) || world.blockAtPixel(location.x + 66, location.y - 66);
+        return world.blockAtPixel(box.x, box.y - 66) || world.blockAtPixel(box.x + 66, box.y - 66);
     }
 
     public boolean hasBlockLeft() {
-        return world.blockAtPixel(location.x - 3, location.y - 1) || world.blockAtPixel(location.x - 3, location.y - 70);
+        return world.blockAtPixel(box.x - 3, box.y - 1) || world.blockAtPixel(box.x - 3, box.y - 70);
     }
 
     public boolean hasBlockRight() {
-        return world.blockAtPixel(location.x + 70, location.y - 1) || world.blockAtPixel(location.x + 66, location.y - 70);
+        return world.blockAtPixel(box.x + 70, box.y - 1) || world.blockAtPixel(box.x + 66, box.y - 70);
     }
 
 
@@ -132,11 +162,19 @@ public class Player implements Tickable {
         this.movement = movement;
     }
 
-    public Point getLocation() {
-        return location;
+    @Override
+    public Rectangle getHitbox() {
+        Rectangle leftTopRect = new Rectangle(box);
+        leftTopRect.setLocation(box.x, box.y - SIZE.height);
+        return leftTopRect;
     }
 
-    public Rectangle getBounds() {
-        return new Rectangle(location.x, location.y - SIZE.height, SIZE.width, SIZE.height);
+    @Override
+    public void draw(Graphics2D g, int xScroll) {
+        g.drawImage(getPlayerImage(getMovement(), getDirection()), box.x, box.y - SIZE.height, null);
+    }
+
+    private static BufferedImage getPlayerImage(MovementStatus movement, Direction direction) {
+        return images[movement.ordinal() * 2 + (direction == Direction.LEFT ? 1 : 0)];
     }
 }
