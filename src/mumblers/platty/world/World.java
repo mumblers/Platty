@@ -1,5 +1,8 @@
 package mumblers.platty.world;
 
+import mumblers.platty.Player;
+import mumblers.platty.graphics.Input;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +11,7 @@ import java.util.List;
  */
 public class World {
 
+    private Player player;
     private List<WorldListener> listeners = new ArrayList<>();
 
     public static String[] defaultWorld = {
@@ -36,11 +40,12 @@ public class World {
     private int blockHeight;// = blocks.length;
     private static final char WALL_TILE = '1';
 
-    public World() {
+    public World(Input input) {
         blockWidth = defaultWorld[0].length();
         blockHeight = defaultWorld.length;
         blocks = new boolean[blockHeight][blockWidth];
         makeBlocksFromString(defaultWorld);
+        player = new Player(input);
     }
 
     private void makeBlocksFromString(String[] world) {
@@ -103,5 +108,9 @@ public class World {
 
     public int getBlockWidth() {
         return blockWidth;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

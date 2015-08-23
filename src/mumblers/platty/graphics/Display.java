@@ -1,6 +1,6 @@
 package mumblers.platty.graphics;
 
-import mumblers.platty.WorldBlocksSprite;
+import mumblers.platty.WorldSprite;
 import mumblers.platty.world.World;
 
 import javax.swing.JFrame;
@@ -30,8 +30,8 @@ public class Display extends Canvas implements Runnable {
     public static final double NS_TICKS = 1000000000.0 / TARGET_TICKS;
 
     private final JFrame frame;
-    private int width = Math.min(Toolkit.getDefaultToolkit().getScreenSize().width - 24, World.defaultWorld[0].length() * WorldBlocksSprite.SPRITE_SIZE);
-    private int height = World.defaultWorld.length * WorldBlocksSprite.SPRITE_SIZE;
+    private int width = Math.min(Toolkit.getDefaultToolkit().getScreenSize().width - 24, World.defaultWorld[0].length() * WorldSprite.SPRITE_SIZE);
+    private int height = World.defaultWorld.length * WorldSprite.SPRITE_SIZE;
 
     private boolean isRunning;
 

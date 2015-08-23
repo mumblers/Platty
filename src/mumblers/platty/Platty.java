@@ -16,25 +16,19 @@ public class Platty implements DisplayRenderer {
     ArrayList<Tickable> tickers = new ArrayList<>();
 
     Display display;
-    WorldBlocksSprite worldSprite;
+    WorldSprite worldSprite;
     World world;
-
-    Player player;
-    PlayerSprite playerSprite;
 
     public Platty() {
         this.display = new Display("Platty");
 
 
         display.setRenderer(this);
-        world = new World();
+        world = new World(display.getInput());
 
-        player = new Player(display.getInput());
-        playerSprite = new PlayerSprite(player);
-
-        worldSprite = new WorldBlocksSprite(world, display.getInput());
+        worldSprite = new WorldSprite(world);
+        tickers.add(world.getPlayer());
         tickers.add(worldSprite);
-        tickers.add(player);
         tickers.add(display.getInput());
 
 
@@ -50,7 +44,6 @@ public class Platty implements DisplayRenderer {
     @Override
     public void render(Graphics2D g, Dimension size) {
         worldSprite.render(g, 0, 0, display.getWidth(), display.getHeight());
-        playerSprite.render(g, player.getLocation().x, player.getLocation().y);
     }
 
     @Override

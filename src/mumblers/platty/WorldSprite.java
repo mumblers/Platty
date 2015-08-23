@@ -17,10 +17,12 @@ import java.io.IOException;
  * Created by Sinius on 19-8-2015.
  * World drawer
  */
-public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener {
+public class WorldSprite extends Sprite implements Tickable, WorldListener {
 
     private static final Color BACKGROUND = new Color(100, 100, 255);
     private static final int CAMERA_MOD = 4;
+    private final Player player;
+    private final PlayerSprite playerSprite;
     /**
      * The world to draw
      */
@@ -70,9 +72,10 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
         }
     }
 
-    public WorldBlocksSprite(World world, Input input) {
+    public WorldSprite(World world) {
         this.world = world;
-        this.input = input;
+        player = world.getPlayer();
+        playerSprite = new PlayerSprite(world.getPlayer());
         this.world.addListener(this);
         worldSizeUpdated();
     }
@@ -91,7 +94,7 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
     public void render(Graphics2D g, int x, int y, int width, int height) {
         g.setColor(BACKGROUND);
         g.fillRect(x, y, width, height);
-        updateScroll(width, height);
+        updateScroll(width);
         for (int row = 0; row < blockImages.length; row++) {
             for (int col = 0; col < blockImages[0].length; col++) {
                 int imgId = blockImages[row][col];
@@ -102,15 +105,14 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
                 }
             }
         }
-        g.setColor(new Color(12, 145, 85));
-        g.fillRect(pX - currentCameraX, 10, 70, 100);
+        playerSprite.render(g, player.getLocation().x - currentCameraX, player.getLocation().y);
     }
 
-    private void updateScroll(int width, int height) {
+    private void updateScroll(int width) {
         if (headingRight) {
-            cameraX = pX - (width * 3) / 4;
+            cameraX = player.getLocation().x - (width * 3) / 4;
         } else {
-            cameraX = pX - width / 4;
+            cameraX = player.getLocation().x - width / 4;
         }
         cameraX = Math.max(0, cameraX);
         if (currentCameraX > cameraX) {
@@ -127,19 +129,6 @@ public class WorldBlocksSprite extends Sprite implements Tickable, WorldListener
 
     @Override
     public void tick() {
-        moving = false;
-        if (input.right.isPressed()) {
-            pX += movementspeed;
-            headingRight = false;
-            moving = true;
-        }
-        if (input.left.isPressed()) {
-            pX -= movementspeed;
-            headingRight = true;
-            if (moving) {
-                moving = false;
-            }
-        }
         if (!shouldDoTick)
             return;
         for (int row = 0; row < world.getBlockHeight(); row++) {
