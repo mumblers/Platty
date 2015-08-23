@@ -21,7 +21,7 @@ public class Player implements Tickable {
      */
     private MovementStatus movement = MovementStatus.STANDING;
 
-    private Point location = new Point(0, 100);
+    private Point location = new Point(100, 100);
 
     private Input input;
 
@@ -35,7 +35,7 @@ public class Player implements Tickable {
     public static final int FALL_SPEED = 5;
     public static final int JUMP_SPEED = FALL_SPEED + 5;
     public static final int SWITCH_OTHER_WALKING = 5;
-    public static final int JUMP_TIME = 15;
+    public static final int JUMP_TIME = 30;
 
     public Player(Input input, World world) {
         this.input = input;
@@ -87,6 +87,18 @@ public class Player implements Tickable {
 
         if (!input.up.isPressed() && jumpCounter > 0)
             jumpLocked = true;
+
+        if (isOutOfBounds()) {
+            Platty.thiss.resetGame();
+        }
+    }
+
+    public boolean isOutOfBounds() {
+        return location.getX() < -WorldSprite.SPRITE_SIZE
+                || location.getX() > world.getBlockWidth() * WorldSprite.SPRITE_SIZE + WorldSprite.SPRITE_SIZE
+                || location.getY() < -WorldSprite.SPRITE_SIZE
+                || location.getY() > world.getBlockHeight() * WorldSprite.SPRITE_SIZE + WorldSprite.SPRITE_SIZE;
+
     }
 
     public boolean hasBlockBeneith() {
@@ -94,11 +106,11 @@ public class Player implements Tickable {
     }
 
     public boolean hasBlockAbove() {
-        return world.blockAtPixel(location.x, location.y - 93) || world.blockAtPixel(location.x + 66, location.y - 93);
+        return world.blockAtPixel(location.x, location.y - 66) || world.blockAtPixel(location.x + 66, location.y - 66);
     }
 
     public boolean hasBlockLeft() {
-        return world.blockAtPixel(location.x - 1, location.y - 1) || world.blockAtPixel(location.x - 1, location.y - 70);
+        return world.blockAtPixel(location.x - 3, location.y - 1) || world.blockAtPixel(location.x - 3, location.y - 70);
     }
 
     public boolean hasBlockRight() {

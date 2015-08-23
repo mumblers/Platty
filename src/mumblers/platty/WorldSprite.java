@@ -1,7 +1,6 @@
 package mumblers.platty;
 
 import mumblers.platty.graphics.Display;
-import mumblers.platty.graphics.Input;
 import mumblers.platty.graphics.Sprite;
 import mumblers.platty.graphics.Tickable;
 import mumblers.platty.world.World;
@@ -11,7 +10,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Random;
 
 /**
  * Created by Sinius on 19-8-2015.
@@ -27,7 +25,6 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
      * The world to draw
      */
     private World world;
-    private Input input;
 
     /**
      * All possible block images.
@@ -51,14 +48,7 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
      */
     private boolean shouldDoTick = true;
 
-    private int cameraX = 0;
     private int currentCameraX = 0;
-    private final int movementspeed = 12;
-    private Random rand;
-
-    private boolean headingRight = true;
-    private int pX = 0;
-    private boolean moving;
 
     public static final int SPRITE_SIZE = 70;
 
@@ -81,7 +71,6 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
         player = world.getPlayer();
         playerSprite = new PlayerSprite(world.getPlayer());
         this.world.addListener(this);
-        rand = new Random();
         worldSizeUpdated();
     }
 
@@ -98,7 +87,6 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
     @Override
     public void render(Graphics2D g, int x, int y, int width, int height) {
         g.setColor(BACKGROUND);
-//        g.fillRect(x, y, width, height);
         g.drawImage(background, x, y, width / 3, height, null);
         g.drawImage(background, x + width / 3, y, width / 3, height, null);
         g.drawImage(background, x + (width - width / 3), y, width / 3, height, null);
@@ -114,22 +102,10 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
             }
         }
         playerSprite.render(g, x + player.getLocation().x - currentCameraX, y + player.getLocation().y);
-        g.drawString("x" + player.getLocation().x, 100, 100);
     }
 
     private void updateScroll(int width) {
-        if (player.getDirection() == Direction.LEFT) {
-            cameraX = player.getLocation().x - (width * 3) / 4;
-        } else {
-            cameraX = player.getLocation().x - width / 4;
-        }
-        cameraX = player.getLocation().x - width / 2;
-        cameraX = Math.max(0, cameraX);
-        if (currentCameraX > cameraX) {
-            currentCameraX = Math.max(cameraX, currentCameraX - movementspeed * CAMERA_MOD);
-        } else if (currentCameraX < cameraX) {
-            currentCameraX = Math.min(cameraX, currentCameraX + movementspeed * CAMERA_MOD);
-        }
+        currentCameraX = Math.max(0, player.getLocation().x - width / 2);
     }
 
     @Override

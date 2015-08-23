@@ -19,31 +19,24 @@ public class Platty implements DisplayRenderer {
     WorldSprite worldSprite;
     World world;
 
+    public boolean toReset;
+
+    public static Platty thiss;
+
     public Platty() {
+        thiss = this;
         this.display = new Display("Platty");
 
-
         display.setRenderer(this);
-        world = new World(display.getInput());
-
-        worldSprite = new WorldSprite(world);
-        tickers.add(world.getPlayer());
-        tickers.add(worldSprite);
-        tickers.add(display.getInput());
-
-
         display.start();
 
-
-    }
-
-    public static void main(String[] args) {
-        new Platty();
+        resetGame();
     }
 
     @Override
     public void render(Graphics2D g, Dimension size) {
-        worldSprite.render(g, 0, 0, display.getWidth(), display.getHeight());
+        if (worldSprite != null)
+            worldSprite.render(g, 0, 0, display.getWidth(), display.getHeight());
     }
 
     @Override
@@ -51,5 +44,26 @@ public class Platty implements DisplayRenderer {
         for (Tickable ticker : tickers) {
             ticker.tick();
         }
+        if (toReset) {
+            tickers.clear();
+
+            world = new World(display.getInput());
+
+            worldSprite = new WorldSprite(world);
+            tickers.add(world.getPlayer());
+            tickers.add(worldSprite);
+            tickers.add(display.getInput());
+            toReset = false;
+        }
     }
+
+    public void resetGame() {
+        toReset = true;
+    }
+
+
+    public static void main(String[] args) {
+        new Platty();
+    }
+
 }
