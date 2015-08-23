@@ -1,6 +1,6 @@
 package mumblers.platty.graphics;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 
 /**
  * @author davidot
@@ -96,9 +96,12 @@ public abstract class Sprite {
     }
 
 
-    public abstract void renderRotated(Graphics2D g, int x, int y, int angle, double xScale,
+    public void renderRotated(Graphics2D g, int x, int y, int angle, double xScale,
                                        double yScale,
-                                       int xOff, int yOff);
+                              int xOff, int yOff) {
+    }
+
+    ;
 
 
     private static class EmptySprite extends Sprite {

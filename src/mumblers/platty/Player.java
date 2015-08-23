@@ -95,10 +95,7 @@ public class Player implements Tickable {
     }
 
     public boolean isOutOfBounds() {
-        return location.getX() < -WorldSprite.SPRITE_SIZE
-                || location.getX() > world.getBlockWidth() * WorldSprite.SPRITE_SIZE + WorldSprite.SPRITE_SIZE
-                || location.getY() < -WorldSprite.SPRITE_SIZE
-                || location.getY() > world.getBlockHeight() * WorldSprite.SPRITE_SIZE + WorldSprite.SPRITE_SIZE;
+        return location.getY() > world.getBlockHeight() * WorldSprite.SPRITE_SIZE + WorldSprite.SPRITE_SIZE;
 
     }
 

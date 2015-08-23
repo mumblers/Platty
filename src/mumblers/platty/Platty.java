@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class Platty implements DisplayRenderer {
 
-    ArrayList<Tickable> tickers = new ArrayList<>();
+    public ArrayList<Tickable> tickers = new ArrayList<>();
 
     Display display;
     WorldSprite worldSprite;

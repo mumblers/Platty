@@ -104,9 +104,11 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
                 }
             }
         }
+        world.getPlate().render(g, currentCameraX);
         playerSprite.render(g, x + player.getLocation().x - currentCameraX, y + player.getLocation().y);
         g.drawString("x" + player.getLocation().x, 100, 100);
         boss.render(g, currentCameraX);
+
         for (Iterator<Bomb> iterator = world.getBombs().iterator(); iterator.hasNext(); ) {
             Bomb bomb = iterator.next();
             if (bomb.removeMe) {
@@ -116,6 +118,8 @@ public class WorldSprite extends Sprite implements Tickable, WorldListener {
             bomb.tick(world);
             bomb.render(g, currentCameraX);
         }
+
+
     }
 
     private void updateScroll(int width) {
