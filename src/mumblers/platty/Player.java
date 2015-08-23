@@ -34,8 +34,8 @@ public class Player implements Tickable {
     public static final int MOVEMENT_SPEED = 7;
     public static final int FALL_SPEED = 5;
     public static final int JUMP_SPEED = FALL_SPEED + 5;
-    public static final int SWITCH_OTHER_WALKING = 100;
-    public static final int JUMP_TIME = 10;
+    public static final int SWITCH_OTHER_WALKING = 5;
+    public static final int JUMP_TIME = 15;
 
     public Player(Input input, World world) {
         this.input = input;
@@ -102,7 +102,7 @@ public class Player implements Tickable {
     }
 
     public boolean hasBlockRight() {
-        return world.blockAtPixel(location.x + 67, location.y - 1) || world.blockAtPixel(location.x + 66, location.y - 70);
+        return world.blockAtPixel(location.x + 70, location.y - 1) || world.blockAtPixel(location.x + 66, location.y - 70);
     }
 
 
