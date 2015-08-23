@@ -70,6 +70,6 @@ public class PlayerSprite extends Sprite {
     }
 
     private static BufferedImage getPlayerImage(MovementStatus movement, Direction direction) {
-        return images[movement.ordinal() * 2 + (direction == Direction.RIGHT ? 1 : 0)];
+        return images[movement.ordinal() * 2 + (direction == Direction.LEFT ? 1 : 0)];
     }
 }
