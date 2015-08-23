@@ -5,7 +5,23 @@ package mumblers.platty;
  */
 public class Player {
 
-    Direction direction;
+    private Direction direction;
 
+    private MovementStatus movement;
 
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    public MovementStatus getMovement() {
+        return movement;
+    }
+
+    public void setMovement(MovementStatus movement) {
+        this.movement = movement;
+    }
 }
