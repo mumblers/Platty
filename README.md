@@ -1,6 +1,7 @@
 # Platty
 Platformer in 48 hour
 
+![Screenshot](https://raw.githubusercontent.com/mumblers/Platty/master/screenshot.png)
 
 ##music
 "Blip Stream" Kevin MacLeod (incompetech.com)
