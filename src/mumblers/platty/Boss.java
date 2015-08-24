@@ -17,6 +17,7 @@ import java.io.IOException;
 public class Boss extends GameObject implements Tickable, Drawable, Hitboxable {
 
     private static final int SPEED = 7;
+    public static final int FOLLOW_RANGE = Bomb.BOMB_SIZE.width / 2;
 
     private Rectangle boundingBox;
     private Direction direction = Direction.LEFT;
@@ -27,6 +28,8 @@ public class Boss extends GameObject implements Tickable, Drawable, Hitboxable {
 
     private int flyCounter = 0;
     private int bombCount = 0;
+    private boolean hit = false;
+    private int hitTime = 0;
 
     private static BufferedImage loadImage(String name) throws IOException {
         return ImageIO.read(Platty.class.getResourceAsStream("bat/" + name + ".png"));
@@ -58,10 +61,21 @@ public class Boss extends GameObject implements Tickable, Drawable, Hitboxable {
                 state = state == State.FLYING1 ? State.FLYING2 : State.FLYING1;
             }
         }
+        if (state == State.DEAD) {
+            if (!world.blockAtPixel(boundingBox.x, boundingBox.y + boundingBox.height)) {
+                boundingBox.y += 4;
+            }
+            return;
+        }
+        if (state == State.HIT) {
+            if (hitTime-- <= 0) {
+                state = State.FLYING1;
+            }
+        }
         if (playerX > boundingBox.x) {
             //right
             direction = Direction.RIGHT;
-            if (playerDistance < 130) {
+            if (playerDistance < FOLLOW_RANGE) {
                 if (bombCount <= 0) {
                     makeBomb();
                 }
@@ -87,7 +101,7 @@ public class Boss extends GameObject implements Tickable, Drawable, Hitboxable {
 
     private void makeBomb() {
         addBomb(boundingBox.x - boundingBox.width / 2, boundingBox.y + 10);
-        bombCount = 50;
+        bombCount = 70;
     }
 
     @Override
@@ -95,7 +109,8 @@ public class Boss extends GameObject implements Tickable, Drawable, Hitboxable {
         int x = boundingBox.x - xScroll;
         int y = boundingBox.y;
         BufferedImage img = direction == Direction.RIGHT ? state.imgRight : state.imgLeft;
-        g.drawImage(img, x - img.getWidth(), y - img.getHeight(), null);
+        g.drawImage(img, x, y, null);
+        g.drawRect(x, y, boundingBox.width, boundingBox.height);
     }
 
     @Override
@@ -105,8 +120,17 @@ public class Boss extends GameObject implements Tickable, Drawable, Hitboxable {
 
     public void addBomb(int x, int y) {
         Bomb bomb = new Bomb(world, player);
-        bomb.getHitbox().x = x - Bomb.BOMB_SIZE.width / 2;
-        bomb.getHitbox().y = y - Bomb.BOMB_SIZE.height / 2;
+        bomb.getHitbox().x = x + Bomb.BOMB_SIZE.width / 2;
+    }
+
+    public void onHit() {
+        if (hit) {
+            state = State.DEAD;
+        } else {
+            state = State.HIT;
+            hit = true;
+            hitTime = 80;
+        }
     }
 
     private enum State {

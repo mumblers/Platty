@@ -1,8 +1,6 @@
 package mumblers.platty.entity;
 
-import mumblers.platty.MovementStatus;
-import mumblers.platty.Platty;
-import mumblers.platty.Player;
+import mumblers.platty.*;
 import mumblers.platty.engine.Drawable;
 import mumblers.platty.engine.GameObject;
 import mumblers.platty.engine.Hitboxable;
@@ -30,13 +28,17 @@ public class PressurePlate extends GameObject implements Tickable, Drawable, Hit
         }
     }
 
+    private final Boss boss;
+
     private Rectangle hitbox;
 
     private Player thePlayer;
 
     private boolean pressed = false;
+    private int count;
 
-    public PressurePlate(Point point, Player thePlayer) {
+    public PressurePlate(Point point, Player thePlayer, Boss boss) {
+        this.boss = boss;
         this.hitbox = new Rectangle(point, new Dimension(130, 70));
         this.thePlayer = thePlayer;
     }
@@ -49,6 +51,15 @@ public class PressurePlate extends GameObject implements Tickable, Drawable, Hit
     @Override
     public void tick() {
         pressed = thePlayer.getHitbox().intersects(this.getHitbox()) && thePlayer.getMovement() == MovementStatus.DUCKING;
+        if (pressed && count <= 0) {
+            addRocket();
+        }
+        count--;
+    }
+
+    private void addRocket() {
+        new Rocket(getHitbox().x + getHitbox().width / 2, getHitbox().y, boss);
+        count = 120;
     }
 
     public boolean isPressed() {

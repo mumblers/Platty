@@ -42,8 +42,8 @@ public class Platty implements DisplayImplementor {
 
         player = new Player(display.getInput(), world);
 
-        new Boss(new Point(world.getBlockWidth() * WorldSprite.SPRITE_SIZE - 300, 70), world, player);
-        new PressurePlate(new Point(world.getBlockWidth() * WorldSprite.SPRITE_SIZE - 300, (world.getBlockHeight() - 2) * WorldSprite.SPRITE_SIZE), player);
+        Boss boss = new Boss(new Point(world.getBlockWidth() * WorldSprite.SPRITE_SIZE - 300, 70), world, player);
+        new PressurePlate(new Point(world.getBlockWidth() * WorldSprite.SPRITE_SIZE - 300, (world.getBlockHeight() - 2) * WorldSprite.SPRITE_SIZE), player, boss);
 
     }
 
