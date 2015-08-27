@@ -4,7 +4,10 @@ import mumblers.platty.engine.*;
 import mumblers.platty.world.World;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -19,7 +22,7 @@ public class Player extends GameObject implements Tickable, Hitboxable, Drawable
     private MovementStatus movement = MovementStatus.STANDING;
 
     //the hitbox where the corner is left bottom!
-    private Rectangle box = new Rectangle(new Point(6000, 100), SIZE);
+    private Rectangle box = new Rectangle(new Point(100, 100), SIZE);
 
     private Input input;
     private World world;

@@ -7,7 +7,10 @@ import mumblers.platty.engine.Tickable;
 import mumblers.platty.world.World;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -110,7 +113,6 @@ public class Boss extends GameObject implements Tickable, Drawable, Hitboxable {
         int y = boundingBox.y;
         BufferedImage img = direction == Direction.RIGHT ? state.imgRight : state.imgLeft;
         g.drawImage(img, x, y, null);
-        g.drawRect(x, y, boundingBox.width, boundingBox.height);
     }
 
     @Override
