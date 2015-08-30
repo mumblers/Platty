@@ -75,9 +75,9 @@ public class Player extends GameObject implements Tickable, Hitboxable, Drawable
 
     @Override
     public void tick() {
-        if (input.left.isClicked())
+        if (input.left.isPressed())
             direction = Direction.LEFT;
-        if (input.right.isClicked())
+        if (input.right.isPressed())
             direction = Direction.RIGHT;
 
         if (input.down.isPressed())

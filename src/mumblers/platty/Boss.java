@@ -67,6 +67,7 @@ public class Boss extends GameObject implements Tickable, Drawable, Hitboxable {
         if (state == State.DEAD) {
             if (!world.blockAtPixel(boundingBox.x, boundingBox.y + boundingBox.height)) {
                 boundingBox.y += 4;
+                boundingBox.x -= 4;
             }
             return;
         }
